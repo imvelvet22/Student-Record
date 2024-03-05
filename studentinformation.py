@@ -201,13 +201,6 @@ root.wm_state("zoom")
 title_label = tk.Label(root, text="Student Record Management System", font=("Helvetica", 45))
 title_label.pack(pady=80)
 
-add_button = tk.Button(root, text="Add Student", font=("Helvetica", 12 ), command=open_add_student_window, width=20, height=3)
-add_button.pack(pady=20)
-
-
-view_button = tk.Button(root, text="View Students", font=("Helvetica", 12 ), command=view_students, width=20, height=3)
-view_button.pack(pady=20)
-
 search_frame = tk.Frame(root)
 search_frame.pack(pady=30)
 
@@ -219,5 +212,13 @@ search_entry.pack(side="left", padx=5, pady=5)
 
 search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
 search_button.pack(side="left", padx=5, pady=5)
+
+add_button = tk.Button(root, text="Add Student", font=("Helvetica", 12 ), command=open_add_student_window, width=20, height=3)
+add_button.pack(pady=20)
+
+
+view_button = tk.Button(root, text="View Students", font=("Helvetica", 12 ), command=view_students, width=20, height=3)
+view_button.pack(pady=20)
+
 
 root.mainloop()
