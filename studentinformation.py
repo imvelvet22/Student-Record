@@ -193,6 +193,29 @@ def display_search_result(student_info):
     tk.Label(search_window, text=f"Birthday:         {student_info[7]}").pack(pady=5)
 
 
+def delete_student_record():
+    student_id = input("Enter the Student ID to delete: ")
+    found = False
+    updated_records = []
+
+    with open("student_records.txt", "r") as file:
+        for line in file:
+            if line.startswith(student_id):
+                found = True
+            else:
+                updated_records.append(line)
+
+    if not found:
+        messagebox.showinfo("Student Not Found", "Student not found.")
+    else:
+        with open("student_records.txt", "w") as file:
+            file.writelines(updated_records)
+        messagebox.showinfo("Success", "Student record deleted successfully.")
+
+def delete_button_clicked():
+    confirmation = messagebox.askyesno("Delete Confirmation", "Are you sure you want to delete a student record?")
+    if confirmation:
+        delete_student_record()
 
 root = tk.Tk()
 root.title("Student Record Management System")
@@ -220,5 +243,7 @@ add_button.pack(pady=20)
 view_button = tk.Button(root, text="View Students", font=("Helvetica", 12 ), command=view_students, width=20, height=3)
 view_button.pack(pady=20)
 
+delete_button = tk.Button(root, text="Delete Record", font=("Helvetica", 12), command=delete_button_clicked, width=20, height=3)
+delete_button.pack(pady=20)
 
 root.mainloop()
