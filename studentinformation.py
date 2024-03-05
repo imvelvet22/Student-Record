@@ -237,10 +237,60 @@ def delete_button_clicked():
     delete_button.pack(pady=10)
 
 def update_student_record():
-    update_window = tk.Toplevel(root)
-    update_window.title("Update Record")
+    def verify_student_id():
+        student_id = id_entry.get()
 
-    # You can create similar GUI components as in add student window to update the student record
+        # Check if the student ID exists
+        found = False
+        with open("student_records.txt", "r") as file:
+            for line in file:
+                if line.startswith(student_id):
+                    found = True
+                    break
+
+        if not found:
+            messagebox.showerror("Error", "Student ID not found.")
+            return
+
+        # Hide the verification window and show the update window
+        verify_window.destroy()
+        show_update_window(student_id)
+
+    def show_update_window(student_id):
+        update_window = tk.Toplevel(root)
+        update_window.title("Update Record")
+
+        # Your existing GUI components to update the student record
+        # Here, you can include the student ID as a read-only field to remind the user which record is being edited
+
+        # Add a save button to update the record
+        save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
+        save_button.pack(pady=10)
+
+        def save_updated_record():
+            # Write code here to save the updated record
+            messagebox.showinfo("Success", "Record updated successfully!")
+            update_window.destroy()
+
+    verify_window = tk.Toplevel(root)
+    verify_window.title("Verify Student ID")
+
+    window_width = 300
+    window_height = 150
+    screen_width = verify_window.winfo_screenwidth()
+    screen_height = verify_window.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    verify_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    verify_label = tk.Label(verify_window, text="Enter Student ID:", font=("Helvetica", 12))
+    verify_label.pack(pady=10)
+
+    id_entry = tk.Entry(verify_window, font=("Helvetica", 12))
+    id_entry.pack(pady=5)
+
+    verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
+    verify_button.pack(pady=5)
 
 root = tk.Tk()
 root.title("Student Record Management System")
