@@ -13,6 +13,7 @@ contact_entry = None
 birthday_entry = None
 add_window = None 
 
+
 def save_student():
     id_no = id_entry.get()
     full_name = name_entry.get()
@@ -193,8 +194,11 @@ def display_search_result(student_info):
     tk.Label(search_window, text=f"Birthday:         {student_info[7]}").pack(pady=5)
 
 
-def delete_student_record():
-    student_id = input("Enter the Student ID to delete: ")
+def delete_student_record(student_id):
+    if not student_id:
+        messagebox.showinfo("Error", "Please enter the student ID first.")
+        return
+
     found = False
     updated_records = []
 
@@ -213,9 +217,31 @@ def delete_student_record():
         messagebox.showinfo("Success", "Student record deleted successfully.")
 
 def delete_button_clicked():
-    confirmation = messagebox.askyesno("Delete Confirmation", "Are you sure you want to delete a student record?")
-    if confirmation:
-        delete_student_record()
+    delete_window = tk.Toplevel(root)
+    delete_window.title("Delete Record")
+
+    window_width = 300
+    window_height = 200
+    screen_width = delete_window.winfo_screenwidth()
+    screen_height = delete_window.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    delete_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    delete_label = tk.Label(delete_window, text="Enter Student ID to delete:", font=("Helvetica", 12))
+    delete_label.pack(pady=10)
+
+    delete_entry = tk.Entry(delete_window, font=("Helvetica", 12))
+    delete_entry.pack(pady=10)
+
+    delete_button = tk.Button(delete_window, text="Delete", command=lambda: delete_student_record(delete_entry.get()), font=("Helvetica", 12))
+    delete_button.pack(pady=10)
+
+def update_student_record():
+    update_window = tk.Toplevel(root)
+    update_window.title("Update Record")
+
+    # You can create similar GUI components as in add student window to update the student record
 
 root = tk.Tk()
 root.title("Student Record Management System")
@@ -245,5 +271,8 @@ view_button.pack(pady=20)
 
 delete_button = tk.Button(root, text="Delete Record", font=("Helvetica", 12), command=delete_button_clicked, width=20, height=3)
 delete_button.pack(pady=20)
+
+update_button = tk.Button(root, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button.pack(pady=20)
 
 root.mainloop()
