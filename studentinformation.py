@@ -104,7 +104,8 @@ def open_add_student_window():
     contact_entry = tk.Entry(add_window, width=30)
     contact_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
 
-    birthday_label = tk.Label(add_window, text="Birthday:", font=("Helvetica", 12))
+    birthday_label = tk.Label(add_window, text="Birthday:", font=("Helvetica", 
+12))
     birthday_label.grid(row=8, column=0, padx=10, pady=5, sticky="e")
     birthday_entry = DateEntry(add_window, width=12, background='darkblue', foreground='white', borderwidth=2)
     birthday_entry.grid(row=8, column=1, padx=10, pady=5, sticky="w")
@@ -156,8 +157,9 @@ def view_students():
 
     tree.pack()
 
-
+search_entry = None
 def search_student():
+    global search_entry
     student_id = search_entry.get()
     found = False
     with open("student_records.txt", "r") as file:
@@ -249,25 +251,14 @@ root.wm_state("zoom")
 title_label = tk.Label(root, text="Student Record Management System", font=("Helvetica", 45))
 title_label.pack(pady=80)
 
-search_frame = tk.Frame(root)
-search_frame.pack(pady=30)
-
-search_label = tk.Label(search_frame, text="Enter student Id to search:", font=("Helvetica", 12))
-search_label.pack(side="left", padx=5, pady=5)
-
-search_entry = tk.Entry(search_frame, font=("Helvetica", 12))
-search_entry.pack(side="left", padx=5, pady=5)
-
-search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
-search_button.pack(side="left", padx=5, pady=5)
-
 button_frame = tk.Frame(root)
 button_frame.pack()
 
 add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
 add_button.grid(row=0, column=0, padx=10, pady=5)
 
-update_button = tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button = tk.Button(button_frame)
+update_button= tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
 update_button.grid(row=0, column=1, padx=10, pady=5)
 
 view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
