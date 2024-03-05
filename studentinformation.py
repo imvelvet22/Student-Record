@@ -11,8 +11,7 @@ email_entry = None
 address_entry = None
 contact_entry = None
 birthday_entry = None
-add_window = None 
-
+add_window = None
 
 def save_student():
     id_no = id_entry.get()
@@ -111,7 +110,7 @@ def open_add_student_window():
     birthday_entry.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
     add_button = tk.Button(add_window, text="Add Student", command=save_student, font=("Helvetica", 12))
-    add_button.grid(row=9, column=0, columnspan=2, pady=10, padx=200, sticky="we")
+    add_button.grid(row=9, column=0, columnspan=2, pady=10, padx=20, sticky="we")
 
     add_window.mainloop()
     
@@ -262,17 +261,19 @@ search_entry.pack(side="left", padx=5, pady=5)
 search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
 search_button.pack(side="left", padx=5, pady=5)
 
-add_button = tk.Button(root, text="Add Student", font=("Helvetica", 12 ), command=open_add_student_window, width=20, height=3)
-add_button.pack(pady=20)
+button_frame = tk.Frame(root)
+button_frame.pack()
 
+add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
+add_button.grid(row=0, column=0, padx=10, pady=5)
 
-view_button = tk.Button(root, text="View Students", font=("Helvetica", 12 ), command=view_students, width=20, height=3)
-view_button.pack(pady=20)
+update_button = tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button.grid(row=0, column=1, padx=10, pady=5)
 
-delete_button = tk.Button(root, text="Delete Record", font=("Helvetica", 12), command=delete_button_clicked, width=20, height=3)
-delete_button.pack(pady=20)
+view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
+view_button.grid(row=1, column=0, padx=10, pady=5)
 
-update_button = tk.Button(root, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
-update_button.pack(pady=20)
+delete_button = tk.Button(button_frame, text="Delete Record", font=("Helvetica", 12), command=delete_button_clicked, width=20, height=3)
+delete_button.grid(row=1, column=1, padx=10, pady=5)
 
 root.mainloop()
