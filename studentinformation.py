@@ -104,8 +104,7 @@ def open_add_student_window():
     contact_entry = tk.Entry(add_window, width=30)
     contact_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
 
-    birthday_label = tk.Label(add_window, text="Birthday:", font=("Helvetica", 
-12))
+    birthday_label = tk.Label(add_window, text="Birthday:", font=("Helvetica", 12))
     birthday_label.grid(row=8, column=0, padx=10, pady=5, sticky="e")
     birthday_entry = DateEntry(add_window, width=12, background='darkblue', foreground='white', borderwidth=2)
     birthday_entry.grid(row=8, column=1, padx=10, pady=5, sticky="w")
@@ -130,32 +129,31 @@ def clear_entries():
 
 def view_students():
     try:
+        view_window = tk.Toplevel(root)
+        view_window.title("View Students")
+
+        tree = ttk.Treeview(view_window, columns=("Full Name", "Age", "Sex", "Email Address", "Address", "Contact Number", "Birthday"))
+        tree.heading("#0", text="Student ID")
+        tree.heading("Full Name", text="Full Name", anchor="w")
+        tree.heading("Age", text="Age", anchor="w")
+        tree.heading("Sex", text="Sex", anchor="w")
+        tree.heading("Email Address", text="Email Address", anchor="w")
+        tree.heading("Address", text="Address", anchor="w")
+        tree.heading("Contact Number", text="Contact Number", anchor="w")
+        tree.heading("Birthday", text="Birthday", anchor="w")
+
         with open("student_records.txt", "r") as file:
-            first_line = file.readline()
+            for line in file:
+                student_data = line.strip().split(',')
+                if len(student_data) >= 8:
+                    tree.insert("", tk.END, text=student_data[0], values=(student_data[1], student_data[2], student_data[3], student_data[4], student_data[5], student_data[6], student_data[7]))
+
+
+        tree.pack()
+
     except FileNotFoundError:
         messagebox.showinfo("No Records", "No student records found. Please add a student first.")
-        return
 
-    view_window = tk.Toplevel(root)
-    view_window.title("View Students")
-
-    tree = ttk.Treeview(view_window, columns=("Full Name", "Age", "Sex", "Email Address", "Address", "Contact Number", "Birthday"))
-    tree.heading("#0", text="Student ID")
-    tree.heading("Full Name", text="Full Name", anchor="w")
-    tree.heading("Age", text="Age", anchor="w")
-    tree.heading("Sex", text="Sex", anchor="w")
-    tree.heading("Email Address", text="Email Address", anchor="w")
-    tree.heading("Address", text="Address", anchor="w")
-    tree.heading("Contact Number", text="Contact Number", anchor="w")
-    tree.heading("Birthday", text="Birthday", anchor="w")
-
-    with open("student_records.txt", "r") as file:
-        for line in file:
-            student_data = line.strip().split(',')
-
-            tree.insert("", tk.END, text=student_data[0], values=(student_data[1], student_data[2], student_data[3], student_data[4], student_data[5], student_data[6], student_data[7]))
-
-    tree.pack()
 
 search_entry = None
 def search_student():
@@ -241,8 +239,6 @@ def delete_button_clicked():
 def update_student_record():
     def verify_student_id():
         student_id = id_entry.get()
-
-        # Check if the student ID exists
         found = False
         with open("student_records.txt", "r") as file:
             for line in file:
@@ -262,17 +258,96 @@ def update_student_record():
         update_window = tk.Toplevel(root)
         update_window.title("Update Record")
 
-        # Your existing GUI components to update the student record
-        # Here, you can include the student ID as a read-only field to remind the user which record is being edited
+        window_width = 500
+        window_height = 400
+        screen_width = update_window.winfo_screenwidth()
+        screen_height = update_window.winfo_screenheight()
+        x_coordinate = int((screen_width / 2) - (window_width / 2))
+        y_coordinate = int((screen_height / 2) - (window_height / 2))
+        update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
-        # Add a save button to update the record
-        save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
-        save_button.pack(pady=10)
-
+        # Function to save updated record
         def save_updated_record():
-            # Write code here to save the updated record
-            messagebox.showinfo("Success", "Record updated successfully!")
+            # Get updated information
+            full_name = name_entry.get()
+            age = age_entry.get()
+            sex = sex_var.get()
+            email_add = email_entry.get()
+            address = address_entry.get()
+            contact_number = contact_entry.get()
+            birthday = birthday_entry.get()
+
+            # Construct updated student record
+            updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
+
+            # Read existing records, update the required record, and write back to the file
+            updated_records = []
+            with open("student_records.txt", "r") as file:
+                for line in file:
+                    if line.startswith(student_id):
+                        updated_records.append(updated_student_info)
+                    else:
+                        updated_records.append(line)
+
+            # Write updated records back to the file
+            with open("student_records.txt", "w") as file:
+                file.writelines(updated_records)
+
+            messagebox.showinfo("Success", "Student information updated successfully!")
             update_window.destroy()
+
+        with open("student_records.txt", "r") as file:
+            for line in file:
+                if line.startswith(student_id):
+                    student_info = line.split(',')
+                    break
+
+        name_label = tk.Label(update_window, text="Full Name:", font=("Helvetica", 12))
+        name_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        name_entry = tk.Entry(update_window, width=30)
+        name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        name_entry.insert(0, student_info[1])
+
+        age_label = tk.Label(update_window, text="Age:", font=("Helvetica", 12))
+        age_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        age_entry = tk.Entry(update_window, width=30)
+        age_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+        age_entry.insert(0, student_info[2])
+
+        sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
+        sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        sex_var = tk.StringVar(value=student_info[3])
+        sex_male = tk.Radiobutton(update_window, text="Male", variable=sex_var, value="Male", font=("Helvetica", 12))
+        sex_male.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        sex_female = tk.Radiobutton(update_window, text="Female", variable=sex_var, value="Female", font=("Helvetica", 12))
+        sex_female.grid(row=3, column=1, padx=100, pady=5, sticky="w")
+
+        email_label = tk.Label(update_window, text="Email Address:", font=("Helvetica", 12))
+        email_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
+        email_entry = tk.Entry(update_window, width=30)
+        email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        email_entry.insert(0, student_info[4])
+
+        address_label = tk.Label(update_window, text="Address:", font=("Helvetica", 12))
+        address_label.grid(row=5, column=0, padx=10, pady=5, sticky="e")
+        address_entry = tk.Entry(update_window, width=30)
+        address_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        address_entry.insert(0, student_info[5])
+
+        contact_label = tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12))
+        contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
+        contact_entry = tk.Entry(update_window, width=30)
+        contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+        contact_entry.insert(0, student_info[6])
+
+        birthday_label = tk.Label(update_window, text="Birthday:", font=("Helvetica", 12))
+        birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
+        birthday_entry = DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2)
+        birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        birthday_entry.set_date(student_info[7])
+
+        save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
+        save_button.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
 
     verify_window = tk.Toplevel(root)
     verify_window.title("Verify Student ID")
@@ -307,8 +382,7 @@ button_frame.pack()
 add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
 add_button.grid(row=0, column=0, padx=10, pady=5)
 
-update_button = tk.Button(button_frame)
-update_button= tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button = tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
 update_button.grid(row=0, column=1, padx=10, pady=5)
 
 view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
@@ -318,3 +392,6 @@ delete_button = tk.Button(button_frame, text="Delete Record", font=("Helvetica",
 delete_button.grid(row=1, column=1, padx=10, pady=5)
 
 root.mainloop()
+
+
+
