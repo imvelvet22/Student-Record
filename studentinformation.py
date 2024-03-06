@@ -13,6 +13,20 @@ contact_entry = None
 birthday_entry = None
 add_window = None
 
+def caesar_cipher_encrypt(text, shift):
+    encrypted_text = ""
+    for char in text:
+        encrypted_ascii = (ord(char) + shift) % 256  # Shift within ASCII range
+        encrypted_text += chr(encrypted_ascii)
+    return encrypted_text
+
+def caesar_cipher_decrypt(text, shift):
+    decrypted_text = ""
+    for char in text:
+        decrypted_ascii = (ord(char) - shift) % 256  # Shift within ASCII range
+        decrypted_text += chr(decrypted_ascii)
+    return decrypted_text
+
 def save_student():
     id_no = id_entry.get()
     full_name = name_entry.get()
@@ -41,8 +55,10 @@ def save_student():
 
     student_info = f"{id_no},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
+    encrypted_student_info = caesar_cipher_encrypt(student_info, shift=3)
+
     with open("student_records.txt", "a") as file:
-        file.write(student_info)
+        file.write(encrypted_student_info)
 
     messagebox.showinfo("Success", "Student information added successfully!")
     clear_entries()
@@ -144,10 +160,11 @@ def view_students():
 
         with open("student_records.txt", "r") as file:
             for line in file:
-                student_data = line.strip().split(',')
+                # Decrypt each line before displaying
+                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                student_data = decrypted_student_info.split(',')
                 if len(student_data) >= 8:
                     tree.insert("", tk.END, text=student_data[0], values=(student_data[1], student_data[2], student_data[3], student_data[4], student_data[5], student_data[6], student_data[7]))
-
 
         tree.pack()
 
