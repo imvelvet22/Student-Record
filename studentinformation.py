@@ -27,6 +27,13 @@ def caesar_cipher_decrypt(text, shift):
         decrypted_text += chr(decrypted_ascii)
     return decrypted_text
 
+def encrypt_filename(filename, shift):
+    encrypted_filename = filename + ".txt"
+    return caesar_cipher_encrypt(encrypted_filename, shift)
+
+def decrypt_filename(encrypted_filename, shift):
+    return caesar_cipher_decrypt(encrypted_filename, shift)
+
 def save_student():
     id_no = id_entry.get()
     full_name = name_entry.get()
@@ -57,7 +64,9 @@ def save_student():
 
     encrypted_student_info = caesar_cipher_encrypt(student_info, shift=3)
 
-    with open("student_records.txt", "a") as file:
+    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+
+    with open(encrypted_filename, "a") as file:
         file.write(encrypted_student_info)
 
     messagebox.showinfo("Success", "Student information added successfully!")
@@ -158,9 +167,10 @@ def view_students():
         tree.heading("Contact Number", text="Contact Number", anchor="w")
         tree.heading("Birthday", text="Birthday", anchor="w")
 
-        with open("student_records.txt", "r") as file:
+        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+
+        with open(encrypted_filename, "r") as file:
             for line in file:
-                # Decrypt each line before displaying
                 decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
                 student_data = decrypted_student_info.split(',')
                 if len(student_data) >= 8:
