@@ -183,6 +183,34 @@ def search_student():
                 break
     if not found:
         messagebox.showinfo("Student Not Found", "Student not found.")
+def open_search_student_window():
+    global search_entry
+
+    search_window = tk.Toplevel(root)
+    search_window.title("Search Student")
+
+    search_label = tk.Label(search_window, text="Enter Student ID:", font=("Helvetica", 12))
+    search_label.grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    search_entry = tk.Entry(search_window, width=30)
+    search_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
+
+    search_button = tk.Button(search_window, text="Search", command=search_student, font=("Helvetica", 12))
+    search_button.grid(row=1, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+def search_student():
+    global search_entry
+    student_id = search_entry.get()
+    found = False
+    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+    with open(encrypted_filename, "r") as file:
+        for line in file:
+            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+            if decrypted_student_info.startswith(student_id):
+                found = True
+                student_info = decrypted_student_info.split(',')
+                display_search_result(student_info)
+                break
+    if not found:
+        messagebox.showinfo("Student Not Found", "Student not found.")
 
 def display_search_result(student_info):
     search_window = tk.Toplevel(root)
@@ -219,13 +247,10 @@ button_frame.pack()
 add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
 add_button.grid(row=0, column=0, padx=10, pady=5)
 
-
 view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
 view_button.grid(row=1, column=0, padx=10, pady=5)
 
-
+search_button = tk.Button(button_frame, text="Search Student", font=("Helvetica", 12), command=open_search_student_window, width=20, height=3)
+search_button.grid(row=2, column=0, padx=10, pady=5)
 
 root.mainloop()
-
-
-
