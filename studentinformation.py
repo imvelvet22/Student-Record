@@ -70,7 +70,6 @@ def save_student():
         file.write(encrypted_student_info)
 
     messagebox.showinfo("Success", "Student information added successfully!")
-    clear_entries()
     add_window.destroy()
 
 def open_add_student_window():
@@ -139,18 +138,6 @@ def open_add_student_window():
 
     add_window.mainloop()
     
-
-def clear_entries():
-    global id_entry, name_entry, age_entry, sex_var, email_entry, address_entry, contact_entry, birthday_entry
-    id_entry.delete(0, tk.END)
-    name_entry.delete(0, tk.END)
-    age_entry.delete(0, tk.END)
-    sex_var.set("Male")
-    email_entry.delete(0, tk.END)
-    address_entry.delete(0, tk.END)
-    contact_entry.delete(0, tk.END)
-    birthday_entry.set_date(datetime.strptime("2000-01-01", "%Y-%m-%d"))
-
 
 def view_students():
     try:
