@@ -35,6 +35,9 @@ def decrypt_filename(encrypted_filename, shift):
     return caesar_cipher_decrypt(encrypted_filename, shift)
 
 def save_student():
+    size = "123456"
+    size2 = "12345678900"
+    size3 = "12"
     id_no = id_entry.get()
     full_name = name_entry.get()
     age = age_entry.get()
@@ -51,15 +54,23 @@ def save_student():
     if not id_no.isdigit():
         messagebox.showerror("Error" , "Id must be a number.")
         return
-
+    if (len(id_no) != len(size)):
+        messagebox.showerror("Error", "Id Number Size must be 6.")
+        return
     if not age.isdigit():
         messagebox.showerror("Error", "Age must be a number.")
         return
-
+    if (len(age) != len(size3)):
+        messagebox.showerror("Error", "Age can't be more than 99")
+        return
+    
     if not contact_number.isdigit():
         messagebox.showerror("Error", "Contact number must be a number.")
         return
-
+    if (len(contact_number) != len(size2)):
+        messagebox.showerror("Error", "Phone number must be 11 in lenght starting with 09.")
+        return
+    
     student_info = f"{id_no},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
     encrypted_student_info = caesar_cipher_encrypt(student_info, shift=3)
