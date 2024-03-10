@@ -12,6 +12,7 @@ address_entry = None
 contact_entry = None
 birthday_entry = None
 add_window = None
+search_entry = None
 
 def caesar_cipher_encrypt(text, shift):
     encrypted_text = ""
@@ -180,22 +181,9 @@ def view_students():
         messagebox.showinfo("No Records", "No student records found. Please add a student first.")
 
 
-search_entry = None
-def search_student():
-    global search_entry
-    student_id = search_entry.get()
-    found = False
-    with open("student_records.txt", "r") as file:
-        for line in file:
-            if line.startswith(student_id):
-                found = True
-                student_info = line.split(',')
-                display_search_result(student_info)
-                break
-    if not found:
-        messagebox.showinfo("Student Not Found", "Student not found.")
+
 def open_search_student_window():
-    global search_entry
+    global search_entry, search_window
 
     search_window = tk.Toplevel(root)
     search_window.title("Search Student")
@@ -207,6 +195,8 @@ def open_search_student_window():
 
     search_button = tk.Button(search_window, text="Search", command=search_student, font=("Helvetica", 12))
     search_button.grid(row=1, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+
+
 def search_student():
     global search_entry
     student_id = search_entry.get()
@@ -223,6 +213,8 @@ def search_student():
     if not found:
         messagebox.showinfo("Student Not Found", "Student not found.")
 
+    search_window.destroy()
+
 def display_search_result(student_info):
     search_window = tk.Toplevel(root)
     search_window.title("Search Result")
@@ -234,16 +226,22 @@ def display_search_result(student_info):
     y_coordinate = int((screen_height / 2) - (window_height / 2))
     search_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
-    tk.Label(search_window, text="Student Information", font=("Helvetica", 20)).pack(pady=10)
+    title_font = ("Helvetica", 20)
+    label_font = ("Arial", 12)
 
-    tk.Label(search_window, text=f"Student Id:       {student_info[0]}").pack(pady=5)
-    tk.Label(search_window, text=f"Full Name:        {student_info[1]}").pack(pady=5)
-    tk.Label(search_window, text=f"Age:              {student_info[2]}").pack(pady=5)
-    tk.Label(search_window, text=f"Sex:              {student_info[3]}").pack(pady=5)
-    tk.Label(search_window, text=f"Email Address:    {student_info[4]}").pack(pady=5)
-    tk.Label(search_window, text=f"Address:          {student_info[5]}").pack(pady=5)
-    tk.Label(search_window, text=f"Contact Number:   {student_info[6]}").pack(pady=5)
-    tk.Label(search_window, text=f"Birthday:         {student_info[7]}").pack(pady=5)
+    tk.Label(search_window, text="S T U D E N T    I N F O R M A T I O N", font=(title_font[0], title_font[1], 'bold')).pack(pady=20)
+
+    label_width = 50  
+
+    tk.Label(search_window, text=f"Student Id:                          {student_info[0]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Full Name:                           {student_info[1]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Age:                                      {student_info[2]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Sex:                                      {student_info[3]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Email Address:                   {student_info[4]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Address:                             {student_info[5]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Contact Number:                {student_info[6]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Birthday:                              {student_info[7]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+
 
 root = tk.Tk()
 root.title("Student Record Management System")
