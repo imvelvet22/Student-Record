@@ -249,6 +249,62 @@ def display_search_result(student_info):
     tk.Label(search_window, text=f"Contact Number:                {student_info[6]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Birthday:                              {student_info[7]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
 
+def update_student():
+    global search_entry, update_window, name_entry, sex_var_update, email_entry, address_entry, contact_entry, birthday_entry
+
+    student_id = search_entry.get()
+    found = False
+    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+
+    with open(encrypted_filename, "r") as file:
+        for line in file:
+            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+            if decrypted_student_info.startswith(student_id):
+                found = True
+                student_info = decrypted_student_info.split(',')
+                break
+
+    if not found:
+        messagebox.showinfo("Student Not Found", "Student not found.")
+        return
+
+    update_window = tk.Toplevel(root)
+    update_window.title("Update Student")
+
+    # Populate the update window with existing student information
+    tk.Label(update_window, text="Update Student Information", font=("Helvetica", 20)).grid(row=0, column=0, columnspan=2, pady=10)
+
+    tk.Label(update_window, text="Student ID:", font=("Helvetica", 12)).grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(update_window, text=student_info[0], font=("Helvetica", 12)).grid(row=1, column=1, padx=10, pady=5, sticky="w")
+
+    tk.Label(update_window, text="Full Name:", font=("Helvetica", 12)).grid(row=2, column=0, padx=10, pady=5, sticky="e")
+    name_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[1]), width=30)
+    name_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+   
+    tk.Label(update_window, text="Sex:", font=("Helvetica", 12)).grid(row=4, column=0, padx=10, pady=5, sticky="e")
+    sex_var_update = tk.StringVar(value=student_info[3])
+    tk.Radiobutton(update_window, text="Male", variable=sex_var_update, value="Male", font=("Helvetica", 12)).grid(row=4, column=1, padx=10, pady=5, sticky="w")
+    tk.Radiobutton(update_window, text="Female", variable=sex_var_update, value="Female", font=("Helvetica", 12)).grid(row=4, column=1, padx=100, pady=5, sticky="w")
+
+    tk.Label(update_window, text="Email Address:", font=("Helvetica", 12)).grid(row=5, column=0, padx=10, pady=5, sticky="e")
+    email_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[4]), width=30)
+    email_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+
+    tk.Label(update_window, text="Address:", font=("Helvetica", 12)).grid(row=6, column=0, padx=10, pady=5, sticky="e")
+    address_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[5]), width=30)
+    address_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+
+    tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12)).grid(row=7, column=0, padx=10, pady=5, sticky="e")
+    contact_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[6]), width=30)
+    contact_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+
+    tk.Label(update_window, text="Birthday:", font=("Helvetica", 12)).grid(row=8, column=0, padx=10, pady=5, sticky="e")
+    birthday_entry = DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern="MM/dd/yyyy", date_var=tk.StringVar(value=student_info[7]))
+    birthday_entry.grid(row=8, column=1, padx=10, pady=5, sticky="w")
+
+    tk.Button(update_window, text="Update Student", command=lambda: save_updated_student(student_id), font=("Helvetica", 12)).grid(row=9, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+
+    search_window.destroy()
 
 
 
@@ -275,9 +331,9 @@ search_button = tk.Button(button_frame, text="Search Student", font=("Helvetica"
 search_button.grid(row=2, column=0, padx=10, pady=5)
 
 update_button = tk.Button(button_frame, text="Update Student", font=("Helvetica", 12), command=update_student, width=20, height=3)
-update_button.grid(row=2, column=0, padx=10, pady=5)
+update_button.grid(row=3, column=0, padx=10, pady=5)
 
 update_button = tk.Button(button_frame, text="Delete Student", font=("Helvetica", 12), command=update_student, width=20, height=3)
-update_button.grid(row=3, column=0, padx=10, pady=5)
+update_button.grid(row=4, column=0, padx=10, pady=5)
 
 root.mainloop()
