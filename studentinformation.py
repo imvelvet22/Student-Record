@@ -240,61 +240,143 @@ def display_search_result(student_info):
     tk.Label(search_window, text=f"Contact Number:                {student_info[6]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Birthday:                              {student_info[7]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
 
+def update_student_record():
+    def verify_student_id():
+        student_id = id_entry.get()
+        found = False
+        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        with open(encrypted_filename, "r") as file:
+            for line in file:
+                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                if decrypted_student_info.startswith(student_id):
+                    found = True
+                    student_info = decrypted_student_info.split(',')
+                    break
 
-def update_student():
-    global search_entry, update_window, sex_var_update, email_entry, address_entry, contact_entry, birthday_entry
+        if not found:
+            messagebox.showerror("Error", "Student ID not found.")
+            return
 
-    student_id = search_entry.get()
-    found = False
-    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        # Hide the verification window and show the update window
+        verify_window.destroy()
+        show_update_window(student_info)
 
-    with open(encrypted_filename, "r") as file:
-        for line in file:
-            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
-            if decrypted_student_info.startswith(student_id):
-                found = True
-                student_info = decrypted_student_info.split(',')
-                break
+    def show_update_window(student_info):
+        update_window = tk.Toplevel(root)
+        update_window.title("Update Record")
 
-    if not found:
-        messagebox.showinfo("Student Not Found", "Student not found.")
-        return
+        window_width = 500
+        window_height = 400
+        screen_width = update_window.winfo_screenwidth()
+        screen_height = update_window.winfo_screenheight()
+        x_coordinate = int((screen_width / 2) - (window_width / 2))
+        y_coordinate = int((screen_height / 2) - (window_height / 2))
+        update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
-    update_window = tk.Toplevel(root)
-    update_window.title("Update Student")
+        # Function to save updated record
+        def save_updated_record():
+            # Get updated information
+            full_name = name_entry.get()
+            age = age_entry.get()
+            sex = sex_var.get()
+            email_add = email_entry.get()
+            address = address_entry.get()
+            contact_number = contact_entry.get()
+            birthday = birthday_entry.get()
 
-    # Populate the update window with existing student information
-    tk.Label(update_window, text="Update Student Information", font=("Helvetica", 20)).grid(row=0, column=0, columnspan=2, pady=10)
+            # Construct updated student record
+            updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
-    tk.Label(update_window, text="Student ID:", font=("Helvetica", 12)).grid(row=1, column=0, padx=10, pady=5, sticky="e")
-    tk.Label(update_window, text=student_info[0], font=("Helvetica", 12)).grid(row=1, column=1, padx=10, pady=5, sticky="w")
+            # Read existing records, update the required record, and write back to the file
+            updated_records = []
+            encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+            with open(encrypted_filename, "r") as file:
+                for line in file:
+                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                    if decrypted_student_info.startswith(student_id):
+                        updated_records.append(updated_student_info)
+                    else:
+                        updated_records.append(line)
 
-    tk.Label(update_window, text="Full Name:", font=("Helvetica", 12)).grid(row=2, column=0, padx=10, pady=5, sticky="e")
-    tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[1]), state="disabled", width=30).grid(row=2, column=1, padx=10, pady=5, sticky="w")
+            # Write updated records back to the file
+            with open(encrypted_filename, "w") as file:
+                file.writelines(updated_records)
 
-    tk.Label(update_window, text="Sex:", font=("Helvetica", 12)).grid(row=3, column=0, padx=10, pady=5, sticky="e")
-    sex_var_update = tk.StringVar(value=student_info[3])
-    tk.Radiobutton(update_window, text="Male", variable=sex_var_update, value="Male", font=("Helvetica", 12)).grid(row=3, column=1, padx=10, pady=5, sticky="w")
-    tk.Radiobutton(update_window, text="Female", variable=sex_var_update, value="Female", font=("Helvetica", 12)).grid(row=3, column=1, padx=100, pady=5, sticky="w")
+            messagebox.showinfo("Success", "Student information updated successfully!")
+            update_window.destroy()
 
-    tk.Label(update_window, text="Email Address:", font=("Helvetica", 12)).grid(row=4, column=0, padx=10, pady=5, sticky="e")
-    email_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[4]), width=30)
-    email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        # Extract student ID from decrypted information
+        student_id = student_info[0]
 
-    tk.Label(update_window, text="Address:", font=("Helvetica", 12)).grid(row=5, column=0, padx=10, pady=5, sticky="e")
-    address_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[5]), width=30)
-    address_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        name_label = tk.Label(update_window, text="Full Name:", font=("Helvetica", 12))
+        name_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        name_entry = tk.Entry(update_window, width=30)
+        name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        name_entry.insert(0, student_info[1])
 
-    tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12)).grid(row=6, column=0, padx=10, pady=5, sticky="e")
-    contact_entry = tk.Entry(update_window, textvariable=tk.StringVar(value=student_info[6]), width=30)
-    contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+        age_label = tk.Label(update_window, text="Age:", font=("Helvetica", 12))
+        age_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        age_entry = tk.Entry(update_window, width=30)
+        age_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+        age_entry.insert(0, student_info[2])
 
-    tk.Label(update_window, text="Birthday:", font=("Helvetica", 12)).grid(row=7, column=0, padx=10, pady=5, sticky="e")
-    DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern="MM/dd/yyyy", date_var=tk.StringVar(value=student_info[7]), state="disabled").grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
+        sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        sex_var = tk.StringVar(value=student_info[3])
+        sex_male = tk.Radiobutton(update_window, text="Male", variable=sex_var, value="Male", font=("Helvetica", 12))
+        sex_male.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        sex_female = tk.Radiobutton(update_window, text="Female", variable=sex_var, value="Female", font=("Helvetica", 12))
+        sex_female.grid(row=3, column=1, padx=100, pady=5, sticky="w")
 
-    tk.Button(update_window, text="Update Student", command=lambda: save_updated_student(student_id), font=("Helvetica", 12)).grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+        email_label = tk.Label(update_window, text="Email Address:", font=("Helvetica", 12))
+        email_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
+        email_entry = tk.Entry(update_window, width=30)
+        email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        email_entry.insert(0, student_info[4])
 
-    search_window.destroy()
+        address_label = tk.Label(update_window, text="Address:", font=("Helvetica", 12))
+        address_label.grid(row=5, column=0, padx=10, pady=5, sticky="e")
+        address_entry = tk.Entry(update_window, width=30)
+        address_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        address_entry.insert(0, student_info[5])
+
+        contact_label = tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12))
+        contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
+        contact_entry = tk.Entry(update_window, width=30)
+        contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+        contact_entry.insert(0, student_info[6])
+
+        birthday_label = tk.Label(update_window, text="Birthday:", font=("Helvetica", 12))
+        birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
+        birthday_entry = DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2)
+        birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        birthday_entry.set_date(student_info[7])
+
+        save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
+        save_button.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+
+    verify_window = tk.Toplevel(root)
+    verify_window.title("Verify Student ID")
+
+    window_width = 300
+    window_height = 150
+    screen_width = verify_window.winfo_screenwidth()
+    screen_height = verify_window.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    verify_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    verify_label = tk.Label(verify_window, text="Enter Student ID:", font=("Helvetica", 12))
+    verify_label.pack(pady=10)
+
+    id_entry = tk.Entry(verify_window, font=("Helvetica", 12))
+    id_entry.pack(pady=5)
+
+    verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
+    verify_button.pack(pady=5)
+
+
+ 
 
 
 
@@ -317,8 +399,10 @@ view_button.grid(row=1, column=0, padx=10, pady=5)
 search_button = tk.Button(button_frame, text="Search Student", font=("Helvetica", 12), command=open_search_student_window, width=20, height=3)
 search_button.grid(row=2, column=0, padx=10, pady=5)
 
-update_button = tk.Button(button_frame, text="Update Student", font=("Helvetica", 12), width=20, height=3)
-update_button.grid(row=3, column=0, padx=10, pady=5)
+update_button = tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button.grid(row=3, column=1, padx=10, pady=5)
 
+update_button = tk.Button(button_frame, text="Update Student Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
+update_button.grid(row=4, column=1, padx=10, pady=5)
 
 root.mainloop()
