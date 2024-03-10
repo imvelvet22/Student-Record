@@ -101,7 +101,7 @@ def open_add_student_window():
     add_window = tk.Toplevel(root)
     add_window.title("Add Student")
 
-    window_width = 500
+    window_width = 400
     window_height = 400
     screen_width = add_window.winfo_screenwidth()
     screen_height = add_window.winfo_screenheight()
