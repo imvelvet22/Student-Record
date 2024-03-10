@@ -35,20 +35,30 @@ def encrypt_filename(filename, shift):
 def decrypt_filename(encrypted_filename, shift):
     return caesar_cipher_decrypt(encrypted_filename, shift)
 
+def calculate_age(birthdate):
+    current_date = datetime.now()
+    birthdate = datetime.strptime(birthdate, "%m/%d/%Y")
+    age = current_date.year - birthdate.year
+
+    # Check if the birth month and day have passed this year
+    if current_date.month < birthdate.month or (current_date.month == birthdate.month and current_date.day < birthdate.day):
+        age -= 1
+
+    return age
+
 def save_student():
+    global birthday_entry
     size = "123456"
     size2 = "12345678900"
-    size3 = "12"
     id_no = id_entry.get()
     full_name = name_entry.get()
-    age = age_entry.get()
     sex = sex_var.get()
     email_add = email_entry.get()
     address = address_entry.get()
     contact_number = contact_entry.get()
-    birthday = birthday_entry.get()
+    birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
 
-    if not all([id_no, full_name, age, sex, email_add, address, contact_number, birthday]):
+    if not all([id_no, full_name, sex, email_add, address, contact_number, birthday]):
         messagebox.showerror("Error", "Please fill in all fields.")
         return
     
@@ -58,18 +68,19 @@ def save_student():
     if (len(id_no) != len(size)):
         messagebox.showerror("Error", "Id Number Size must be 6.")
         return
-    if not age.isdigit():
-        messagebox.showerror("Error", "Age must be a number.")
-        return
-    if (len(age) != len(size3)):
-        messagebox.showerror("Error", "Age can't be more than 99")
-        return
     
     if not contact_number.isdigit():
         messagebox.showerror("Error", "Contact number must be a number.")
         return
     if (len(contact_number) != len(size2)):
-        messagebox.showerror("Error", "Phone number must be 11 in lenght starting with 09.")
+        messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
+        return
+    
+    # Compute age based on birthday
+    try:
+        age = calculate_age(birthday)
+    except ValueError:
+        messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
         return
     
     student_info = f"{id_no},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
@@ -85,7 +96,7 @@ def save_student():
     add_window.destroy()
 
 def open_add_student_window():
-    global id_entry, name_entry, age_entry, sex_var, email_entry, address_entry, contact_entry, birthday_entry, add_window
+    global id_entry, name_entry, sex_var, email_entry, address_entry, contact_entry, birthday_entry, add_window
 
     add_window = tk.Toplevel(root)
     add_window.title("Add Student")
@@ -110,12 +121,6 @@ def open_add_student_window():
     name_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
     name_entry = tk.Entry(add_window, width=30)
     name_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-
-    age_label = tk.Label(add_window, text="Age:", font=("Helvetica", 12))
-    age_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
-    age_entry = tk.Entry(add_window, width=30)
-    age_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
-
    
     sex_label = tk.Label(add_window, text="Sex:", font=("Helvetica", 12))
     sex_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
@@ -231,11 +236,13 @@ def display_search_result(student_info):
 
     tk.Label(search_window, text="S T U D E N T    I N F O R M A T I O N", font=(title_font[0], title_font[1], 'bold')).pack(pady=20)
 
-    label_width = 50  
+    label_width = 50
+    birthday = datetime.strptime(student_info[7], "%m/%d/%Y").strftime("%m/%d/%Y")
+    age = calculate_age(birthday)
 
     tk.Label(search_window, text=f"Student Id:                          {student_info[0]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Full Name:                           {student_info[1]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
-    tk.Label(search_window, text=f"Age:                                      {student_info[2]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
+    tk.Label(search_window, text=f"Age:                                      {age}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Sex:                                      {student_info[3]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Email Address:                   {student_info[4]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Address:                             {student_info[5]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
