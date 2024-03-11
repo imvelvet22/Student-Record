@@ -176,6 +176,15 @@ def view_students():
 
         encrypted_filename = encrypt_filename("student_records.txt", shift=3)
 
+        with open(encrypted_filename, "r") as file:
+            for line in file:
+                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                student_data = decrypted_student_info.split(',')
+                if len(student_data) >= 8:
+                    tree.insert("", tk.END, text=student_data[0], values=(student_data[1], student_data[2], student_data[3], student_data[4], student_data[5], student_data[6], student_data[7]))
+
+        tree.pack()
+
     except FileNotFoundError:
         messagebox.showinfo("No Records", "No student records found. Please add a student first.")
 
@@ -402,10 +411,7 @@ view_button.grid(row=1, column=0, padx=10, pady=5)
 search_button = tk.Button(button_frame, text="Search Student", font=("Helvetica", 12), command=open_search_student_window, width=20, height=3)
 search_button.grid(row=2, column=0, padx=10, pady=5)
 
-update_button = tk.Button(button_frame, text="Update Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
-update_button.grid(row=3, column=1, padx=10, pady=5)
-
 update_button = tk.Button(button_frame, text="Update Student Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
-update_button.grid(row=4, column=1, padx=10, pady=5)
+update_button.grid(row=3, column=1, padx=10, pady=5)
 
 root.mainloop()
