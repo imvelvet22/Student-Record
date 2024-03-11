@@ -269,7 +269,6 @@ def update_student_record():
             messagebox.showerror("Error", "Student ID not found.")
             return
 
-        # Hide the verification window and show the update window
         verify_window.destroy()
         show_update_window(student_info)
 
@@ -285,20 +284,27 @@ def update_student_record():
         y_coordinate = int((screen_height / 2) - (window_height / 2))
         update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
-        # Function to save updated record
+        
         def save_updated_record():
-            # Get updated information
             full_name = name_entry.get()
-            age = age_entry.get()
             sex = sex_var.get()
             email_add = email_entry.get()
             address = address_entry.get()
             contact_number = contact_entry.get()
-            birthday = birthday_entry.get()
+            birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
+
+            # Compute age based on birthday
+            try:
+                age = calculate_age(birthday)
+            except ValueError:
+                messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
+                return
 
             # Construct updated student record
             updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
+            encrypted_updated_info = caesar_cipher_encrypt(updated_student_info, shift=3)
+            
             # Read existing records, update the required record, and write back to the file
             updated_records = []
             encrypted_filename = encrypt_filename("student_records.txt", shift=3)
@@ -306,7 +312,7 @@ def update_student_record():
                 for line in file:
                     decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
                     if decrypted_student_info.startswith(student_id):
-                        updated_records.append(updated_student_info)
+                        updated_records.append(encrypted_updated_info)
                     else:
                         updated_records.append(line)
 
@@ -325,12 +331,6 @@ def update_student_record():
         name_entry = tk.Entry(update_window, width=30)
         name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
         name_entry.insert(0, student_info[1])
-
-        age_label = tk.Label(update_window, text="Age:", font=("Helvetica", 12))
-        age_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
-        age_entry = tk.Entry(update_window, width=30)
-        age_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-        age_entry.insert(0, student_info[2])
 
         sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
         sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
@@ -386,9 +386,6 @@ def update_student_record():
 
     verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
     verify_button.pack(pady=5)
-
-
- 
 
 
 
