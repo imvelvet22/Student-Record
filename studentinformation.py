@@ -432,7 +432,7 @@ delete_button.grid(row=0, column=3, padx=20)
 search_frame = tk.Frame(root)
 search_frame.pack(pady=20)
 
-search_label = tk.Label(search_frame, text="Search Student by ID:", font=("Helvetica", 12))
+search_label = tk.Label(search_frame, text="Search Student :", font=("Helvetica", 12))
 search_label.grid(row=0, column=0)
 
 search_entry = tk.Entry(search_frame, font=("Helvetica", 12), width=30)
