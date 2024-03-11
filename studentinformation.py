@@ -387,6 +387,47 @@ def update_student_record():
     verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
     verify_button.pack(pady=5)
 
+def delete_student_record():
+    def verify_and_delete():
+        student_id = id_entry.get()
+        found = False
+        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        with open(encrypted_filename, "r") as file:
+            lines = file.readlines()
+        with open(encrypted_filename, "w") as file:
+            for line in lines:
+                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                if decrypted_student_info.startswith(student_id):
+                    found = True
+                else:
+                    file.write(line)
+
+        if found:
+            messagebox.showinfo("Success", "Student information deleted successfully!")
+        else:
+            messagebox.showerror("Error", "Student ID not found.")
+
+        delete_window.destroy()
+
+    delete_window = tk.Toplevel(root)
+    delete_window.title("Delete Student Record")
+
+    window_width = 300
+    window_height = 150
+    screen_width = delete_window.winfo_screenwidth()
+    screen_height = delete_window.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    delete_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    delete_label = tk.Label(delete_window, text="Enter Student ID:", font=("Helvetica", 12))
+    delete_label.pack(pady=10)
+
+    id_entry = tk.Entry(delete_window, font=("Helvetica", 12))
+    id_entry.pack(pady=5)
+
+    delete_button = tk.Button(delete_window, text="Delete", command=verify_and_delete, font=("Helvetica", 12))
+    delete_button.pack(pady=5)
 
 
 root = tk.Tk()
@@ -410,5 +451,9 @@ search_button.grid(row=2, column=0, padx=10, pady=5)
 
 update_button = tk.Button(button_frame, text="Update Student Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
 update_button.grid(row=3, column=1, padx=10, pady=5)
+
+delete_button = tk.Button(button_frame, text="Delete Student Record", font=("Helvetica", 12), command=delete_student_record, width=20, height=3)
+delete_button.grid(row=3, column=0, padx=10, pady=5)
+
 
 root.mainloop()
