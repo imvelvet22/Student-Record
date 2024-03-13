@@ -35,6 +35,9 @@ def encrypt_filename(filename, shift):
 def decrypt_filename(encrypted_filename, shift):
     return caesar_cipher_decrypt(encrypted_filename, shift)
 
+
+
+
 def calculate_age(birthdate):
     current_date = datetime.now()
     birthdate = datetime.strptime(birthdate, "%m/%d/%Y")
@@ -154,6 +157,7 @@ def open_add_student_window():
     add_button.grid(row=9, column=0, columnspan=2, pady=10, padx=20, sticky="we")
 
     add_window.mainloop()
+    
 
 def view_students():
     try:
@@ -184,6 +188,23 @@ def view_students():
     except FileNotFoundError:
         messagebox.showinfo("No Records", "No student records found. Please add a student first.")
 
+
+
+def open_search_student_window():
+    global search_entry, search_window
+
+    search_window = tk.Toplevel(root)
+    search_window.title("Search Student")
+
+    search_label = tk.Label(search_window, text="Enter Student ID:", font=("Helvetica", 12))
+    search_label.grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    search_entry = tk.Entry(search_window, width=30)
+    search_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
+
+    search_button = tk.Button(search_window, text="Search", command=search_student, font=("Helvetica", 12))
+    search_button.grid(row=1, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+
+
 def search_student():
     global search_entry
     student_id = search_entry.get()
@@ -199,6 +220,8 @@ def search_student():
                 break
     if not found:
         messagebox.showinfo("Student Not Found", "Student not found.")
+
+    search_window.destroy()
 
 def display_search_result(student_info):
     search_window = tk.Toplevel(root)
@@ -418,27 +441,19 @@ button_frame = tk.Frame(root)
 button_frame.pack()
 
 add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
-add_button.grid(row=0, column=0, padx=20)
+add_button.grid(row=0, column=0, padx=10, pady=5)
 
 view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
-view_button.grid(row=0, column=1, padx=20)
+view_button.grid(row=1, column=0, padx=10, pady=5)
+
+search_button = tk.Button(button_frame, text="Search Student", font=("Helvetica", 12), command=open_search_student_window, width=20, height=3)
+search_button.grid(row=2, column=0, padx=10, pady=5)
 
 update_button = tk.Button(button_frame, text="Update Student Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
-update_button.grid(row=0, column=2, padx=20)
+update_button.grid(row=3, column=1, padx=10, pady=5)
 
 delete_button = tk.Button(button_frame, text="Delete Student Record", font=("Helvetica", 12), command=delete_student_record, width=20, height=3)
-delete_button.grid(row=0, column=3, padx=20)
+delete_button.grid(row=3, column=0, padx=10, pady=5)
 
-search_frame = tk.Frame(root)
-search_frame.pack(pady=20)
-
-search_label = tk.Label(search_frame, text="Search Student :", font=("Helvetica", 12))
-search_label.grid(row=0, column=0)
-
-search_entry = tk.Entry(search_frame, font=("Helvetica", 12), width=30)
-search_entry.grid(row=0, column=1, padx=10)
-
-search_button = tk.Button(search_frame, text="Search", font=("Helvetica", 12), command=search_student)
-search_button.grid(row=0, column=2, padx=10)
 
 root.mainloop()
