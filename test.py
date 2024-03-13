@@ -71,17 +71,10 @@ class StudentRecordManagementSystem:
 
     def search_student(self):
         student_id = self.search_entry.get()
-        found = False
-        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
-        with open(encrypted_filename, "r") as file:
-            for line in file:
-                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
-                if decrypted_student_info.startswith(student_id):
-                    found = True
-                    student_info = decrypted_student_info.split(',')
-                    DisplaySearchResultWindow(self.root, student_info)
-                    break
-        if not found:
+        found, student_info = find_student_info(student_id)
+        if found:
+            DisplaySearchResultWindow(self.root, student_info)
+        else:
             messagebox.showinfo("Student Not Found", "Student not found.")
 
     def run(self):
@@ -267,16 +260,7 @@ class UpdateStudentRecordWindow:
     def initialize_gui(self):
         def verify_student_id():
             student_id = id_entry.get()
-            found = False
-            encrypted_filename = encrypt_filename("student_records.txt", shift=3)
-            with open(encrypted_filename, "r") as file:
-                for line in file:
-                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
-                    if decrypted_student_info.startswith(student_id):
-                        found = True
-                        student_info = decrypted_student_info.split(',')
-                        break
-
+            found, student_info = find_student_info(student_id)
             if found:
                 verify_window.destroy()
                 show_update_window(student_info)
@@ -474,6 +458,19 @@ class DisplaySearchResultWindow:
 
 
 # Utility functions here
+        
+def find_student_info(student_id):
+    found = False
+    student_info = None
+    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+    with open(encrypted_filename, "r") as file:
+        for line in file:
+            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+            if decrypted_student_info.startswith(student_id):
+                found = True
+                student_info = decrypted_student_info.split(',')
+                break
+    return found, student_info
 
 def caesar_cipher_encrypt(text, shift):
     encrypted_text = ""
