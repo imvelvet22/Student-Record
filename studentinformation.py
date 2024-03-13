@@ -314,6 +314,35 @@ def update_student_record():
         name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
         name_entry.insert(0, student_info[1])
 
+        contact_label = tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12))
+        contact_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        contact_entry = tk.Entry(update_window, width=30)
+        contact_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+        contact_entry.insert(0, student_info[2])
+
+        sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
+        sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        sex_entry = tk.Entry(update_window, width=30)
+        sex_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        sex_entry.insert(0, student_info[3])
+
+
+        address_label = tk.Label(update_window, text="Address:", font=("Helvetica", 12))
+        address_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
+        address_entry = tk.Entry(update_window, width=30)
+        address_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        address_entry.insert(0, student_info[4])
+
+
+        birthday_label = tk.Label(update_window, text="Birthday:", font=("Helvetica", 12))
+        birthday_label.grid(row=5, column=0, padx=10, pady=5, sticky="e")
+        birthday_entry = tk.Entry(update_window, width=30)
+        birthday_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        birthday_entry.insert(0, student_info[5])
+
+
+         
+
         # More entry widgets for other fields...
 
         save_button = tk.Button(update_window, text="Save", command=lambda: save_updated_record(student_info[0], found), font=("Helvetica", 12))
