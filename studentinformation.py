@@ -286,6 +286,9 @@ class UpdateStudentRecordWindow:
             update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
             def save_updated_record():
+                if len(student_id) != 6:
+                  messagebox.showerror("Error", "Please enter a valid student ID.")
+                  return
                 full_name = name_entry.get()
                 sex = sex_var.get()
                 email_add = email_entry.get()
