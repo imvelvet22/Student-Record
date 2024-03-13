@@ -6,10 +6,9 @@ from datetime import datetime
 # Constants or configuration variables
 WINDOW_WIDTH = 427
 WINDOW_HEIGHT = 400
-ID_SIZE = 6
-PHONE_NUMBER_SIZE = 11
-FILENAME = "student_records.txt"
-SHIFT_VALUE = 3
+LABEL_WIDTH = 50
+ID_SIZE = "123456"
+CONTACT_NUMBER_SIZE = "12345678900"
 
 
 class StudentRecordManagementSystem:
@@ -168,14 +167,14 @@ class AddStudentWindow:
             messagebox.showerror("Error" , "Id must be a number.")
             return
         if (len(id_no) != len(ID_SIZE)):
-            messagebox.showerror("Error", "Id Number Size must be {ID_SIZE}.")
+            messagebox.showerror("Error", "Id Number Size must be 6.")
             return
 
         if not contact_number.isdigit():
             messagebox.showerror("Error", "Contact number must be a number.")
             return
-        if (len(contact_number) != PHONE_NUMBER_SIZE) or not contact_number.startswith("09"):
-            messagebox.showerror("Error", f"Phone number must be {PHONE_NUMBER_SIZE} in length starting with 09.")
+        if (len(contact_number) != len(CONTACT_NUMBER_SIZE)):
+            messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
             return
 
         # Compute age based on birthday
@@ -327,40 +326,43 @@ class UpdateStudentRecordWindow:
             # Extract student ID from decrypted information
             student_id = student_info[0]
 
+            title_label = tk.Label(update_window, text="Update Student Information", font=("Helvetica", 20))
+            title_label.grid(row=0, column=0, columnspan=2, pady=20)
+
             name_label = tk.Label(update_window, text="Full Name:", font=("Helvetica", 12))
-            name_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+            name_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
             name_entry = tk.Entry(update_window, width=30)
             name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
             name_entry.insert(0, student_info[1])
 
             sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
-            sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+            sex_label.grid(row=3, column=0, padx=10, pady=10, sticky="e")
             sex_var = tk.StringVar(value=student_info[3])
             sex_male = tk.Radiobutton(update_window, text="Male", variable=sex_var, value="Male", font=("Helvetica", 12))
-            sex_male.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+            sex_male.grid(row=3, column=1, padx=10, pady=10, sticky="w")
             sex_female = tk.Radiobutton(update_window, text="Female", variable=sex_var, value="Female", font=("Helvetica", 12))
             sex_female.grid(row=3, column=1, padx=100, pady=5, sticky="w")
 
             email_label = tk.Label(update_window, text="Email Address:", font=("Helvetica", 12))
-            email_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
+            email_label.grid(row=4, column=0, padx=10, pady=10, sticky="e")
             email_entry = tk.Entry(update_window, width=30)
             email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
             email_entry.insert(0, student_info[4])
 
             address_label = tk.Label(update_window, text="Address:", font=("Helvetica", 12))
-            address_label.grid(row=5, column=0, padx=10, pady=5, sticky="e")
+            address_label.grid(row=5, column=0, padx=10, pady=10, sticky="e")
             address_entry = tk.Entry(update_window, width=30)
             address_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
             address_entry.insert(0, student_info[5])
 
             contact_label = tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12))
-            contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
+            contact_label.grid(row=6, column=0, padx=10, pady=10, sticky="e")
             contact_entry = tk.Entry(update_window, width=30)
             contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
             contact_entry.insert(0, student_info[6])
 
             birthday_label = tk.Label(update_window, text="Birthday:", font=("Helvetica", 12))
-            birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
+            birthday_label.grid(row=7, column=0, padx=10, pady=10, sticky="e")
             birthday_entry = DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2)
             birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
             birthday_entry.set_date(student_info[7])
