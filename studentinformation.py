@@ -447,7 +447,7 @@ delete_button = tk.Button(root, text="Delete Record", command=delete_student_rec
 delete_button.pack(pady=5)
 
 def on_enter(event):
-    event.widget.config(bg="pink")
+    event.widget.config(bg="#8db4ad")
 
 def on_leave(event):
     event.widget.config(bg="SystemButtonFace")  # Change to the default background color
