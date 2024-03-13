@@ -14,10 +14,6 @@ birthday_entry = None
 add_window = None
 search_entry = None
 
-
-
-
-
 def caesar_cipher_encrypt(text, shift):
     encrypted_text = ""
     for char in text:
@@ -415,6 +411,7 @@ def delete_student_record():
     delete_button.pack(pady=5)
 
 
+
 root = tk.Tk()
 root.title("Student Record Management System")
 root.wm_state("zoom")
@@ -423,7 +420,7 @@ title_label = tk.Label(root, text="Student Record Management System", font=("Hel
 title_label.pack(pady=80)
 
 search_frame = tk.Frame(root)
-search_frame.pack(pady=20)
+search_frame.pack(pady=(0, 20), padx=(0, 60), anchor='se') 
 
 search_label = tk.Label(search_frame, text="Enter ID:", font=("Helvetica", 12))
 search_label.grid(row=0, column=0)
@@ -433,6 +430,7 @@ search_entry.grid(row=0, column=1)
 
 search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
 search_button.grid(row=0, column=2, padx=10)
+
 
 add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12), width=20, height=2)
 add_button.pack(pady=(10, 5))  
