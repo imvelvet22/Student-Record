@@ -238,6 +238,8 @@ class ViewStudentsWindow:
         for record in self.tree.get_children():
             self.tree.delete(record)
 
+            
+
         # Retrieve student records from file
         encrypted_filename = encrypt_filename("student_records.txt", shift=3)
         with open(encrypted_filename, "r") as file:
@@ -260,7 +262,20 @@ class UpdateStudentRecordWindow:
     def initialize_gui(self):
         def verify_student_id():
             student_id = id_entry.get()
+<<<<<<< Updated upstream
             found, student_info = find_student_info(student_id)
+            found = False
+
+            encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+            with open(encrypted_filename, "r") as file:
+                for line in file:
+                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                    if decrypted_student_info.startswith(student_id):
+                        found = True
+                        student_info = decrypted_student_info.split(',')
+                        break
+
+>>>>>>> Stashed changes
             if found:
                 verify_window.destroy()
                 show_update_window(student_info)
@@ -282,6 +297,10 @@ class UpdateStudentRecordWindow:
             update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
             def save_updated_record():
+                student_id = id_entry.get()
+                if len(student_id) != 6:  
+                 messagebox.showerror("Error", "Please enter a valid student ID.")
+                 return
                 full_name = name_entry.get()
                 sex = sex_var.get()
                 email_add = email_entry.get()
@@ -289,7 +308,6 @@ class UpdateStudentRecordWindow:
                 contact_number = contact_entry.get()
                 birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
 
-                # Compute age based on birthday
                 try:
                     age = calculate_age(birthday)
                 except ValueError:
@@ -428,6 +446,8 @@ class DisplaySearchResultWindow:
 
         # Initialize GUI components
         self.initialize_gui(student_info)
+
+
 
     def initialize_gui(self, student_info):
         window_width = 600
