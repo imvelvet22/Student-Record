@@ -413,6 +413,12 @@ class DeleteStudentRecordWindow:
 
     def delete_student(self):
         student_id = self.id_entry.get()
+        if not student_id:  # Check if the student ID entry is empty
+                messagebox.showerror("Error", "Please enter the student ID.")
+                return
+        if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
+            messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+            return
         found = False
         encrypted_filename = encrypt_filename("student_records.txt", shift=3)
         with open(encrypted_filename, "r") as file:
