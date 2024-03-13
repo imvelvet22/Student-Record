@@ -184,6 +184,12 @@ class AddStudentWindow:
         if (len(contact_number) != len(CONTACT_NUMBER_SIZE)):
             messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
             return
+        
+            # Check if the student ID is already taken
+        found, _ = find_student_info(id_no)
+        if found:
+            messagebox.showerror("Error", "Student ID is already taken.")
+            return
 
         # Compute age based on birthday
         try:
@@ -254,9 +260,10 @@ class ViewStudentsWindow:
         encrypted_filename = encrypt_filename("student_records", shift=3)
         with open(encrypted_filename, "r") as file:
             for line in file:
-                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
-                student_info = decrypted_student_info.split(',')
-                self.tree.insert("", tk.END, values=student_info)
+                if line.strip():  # Check if line is not empty
+                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                    student_info = decrypted_student_info.split(',')
+                    self.tree.insert("", tk.END, values=student_info)
 
 
 class UpdateStudentRecordWindow:
@@ -274,16 +281,20 @@ class UpdateStudentRecordWindow:
             student_id = id_entry.get()
             if not student_id:  # Check if the student ID entry is empty
                 messagebox.showerror("Error", "Please enter the student ID.")
+                verify_window.destroy()
                 return
             if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
                 messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+                verify_window.destroy()
                 return
             found, student_info = find_student_info(student_id)
             if found:
-                verify_window.destroy()
+                
                 show_update_window(student_info)
             else:
                 messagebox.showerror("Error", "Student ID not found.")
+                verify_window.destroy()
+            verify_window.destroy()
 
         def show_update_window(student_info):
             update_window = tk.Toplevel(self.master)
@@ -313,7 +324,7 @@ class UpdateStudentRecordWindow:
                     return
 
                 # Construct updated student record
-                updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
+                updated_student_info = f"\n{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}"
 
                 encrypted_updated_info = caesar_cipher_encrypt(updated_student_info, shift=3)
 
@@ -426,9 +437,11 @@ class DeleteStudentRecordWindow:
         student_id = self.id_entry.get()
         if not student_id:  # Check if the student ID entry is empty
                 messagebox.showerror("Error", "Please enter the student ID.")
+                self.delete_window.destroy()
                 return
         if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
             messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+            self.delete_window.destroy()
             return
         found = False
         encrypted_filename = encrypt_filename("student_records", shift=3)
@@ -453,6 +466,8 @@ class DeleteStudentRecordWindow:
                         file.write(line)
         else:
             messagebox.showerror("Error", "Student ID not found.")
+            self.delete_window.destroy()
+        self.delete_window.destroy()
             
 class DisplaySearchResultWindow:
     def __init__(self, master, student_info):
