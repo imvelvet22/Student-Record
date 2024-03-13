@@ -14,6 +14,10 @@ birthday_entry = None
 add_window = None
 search_entry = None
 
+
+
+
+
 def caesar_cipher_encrypt(text, shift):
     encrypted_text = ""
     for char in text:
@@ -101,7 +105,7 @@ def open_add_student_window():
     add_window = tk.Toplevel(root)
     add_window.title("Add Student")
 
-    window_width = 410
+    window_width = 428
     window_height = 400
     screen_width = add_window.winfo_screenwidth()
     screen_height = add_window.winfo_screenheight()
@@ -253,7 +257,7 @@ def update_student_record():
         update_window = tk.Toplevel(root)
         update_window.title("Update Record")
 
-        window_width = 300
+        window_width = 430
         window_height = 300
         screen_width = update_window.winfo_screenwidth()
         screen_height = update_window.winfo_screenheight()
