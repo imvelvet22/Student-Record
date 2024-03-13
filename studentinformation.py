@@ -6,7 +6,6 @@ from datetime import datetime
 # Constants or configuration variables
 WINDOW_WIDTH = 427
 WINDOW_HEIGHT = 400
-LABEL_WIDTH = 50
 ID_SIZE = "123456"
 CONTACT_NUMBER_SIZE = "12345678900"
 
