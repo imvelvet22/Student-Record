@@ -68,7 +68,15 @@ class StudentRecordManagementSystem:
 
     def search_student(self):
         student_id = self.search_entry.get()
+        if not student_id:  # Check if the student ID entry is empty
+                messagebox.showerror("Error", "Please enter the student ID.")
+                return
+        if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
+            messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+            return
+        
         found, student_info = find_student_info(student_id)
+        
         if found:
             DisplaySearchResultWindow(self.root, student_info)
         else:
