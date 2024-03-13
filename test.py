@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime
+from PIL import Image, ImageTk
 
 # Constants or configuration variables
 WINDOW_WIDTH = 427
 WINDOW_HEIGHT = 400
-LABEL_WIDTH = 50
 ID_SIZE = "123456"
 CONTACT_NUMBER_SIZE = "12345678900"
 
@@ -14,26 +14,38 @@ CONTACT_NUMBER_SIZE = "12345678900"
 class StudentRecordManagementSystem:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Student Record Management System")
+        self.root.title("Student Information System")
         self.root.wm_state("zoom")
 
-        self.canvas = tk.Canvas(self.root, width=self.root.winfo_screenwidth() // 2, height=self.root.winfo_screenheight(), bg="sky blue", highlightthickness=0)
-        self.canvas.place(x=0, y=0)  # Ensure it's placed at the back
+        self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
+        self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-100, y=-50)
 
-        self.title_label = tk.Label(self.root, text="Student Record Management System", font=("Times New Roman", 45))
-        self.title_label.pack(pady=80)
+        self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
+        self.resized_image = self.image.resize((200, 200))  # Adjust the size as needed, resize image to yung sa gilid
+
+        self.photo = ImageTk.PhotoImage(self.resized_image)
+
+        self.image_label = tk.Label(self.root, image=self.photo)
+        self.image_label.place(x=50, y=50)
+
+        self.pink_frame = tk.Frame(self.root, bg="black", width=360, height=590)  #yung box
+        self.pink_frame.place(relx=0.2, rely=0.05, anchor='nw')  # Adjust relx to move the frame to the right
+
+
+        self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 45), anchor='e', justify='right')
+        self.title_label.place(relx=1, rely=0.4, anchor='e', x=-100, y=90)
 
         self.search_frame = tk.Frame(self.root)
-        self.search_frame.pack(pady=(0, 20), padx=(0, 60), anchor='se') 
+        self.search_frame.pack(side='top', padx=20, pady=(100, 200), anchor='se')  #  move it higher
 
         self.search_label = tk.Label(self.search_frame, text="Enter ID:", font=("Helvetica", 12))
-        self.search_label.grid(row=0, column=0)
+        self.search_label.grid(row=0, column=0, padx=(0, 10))  # move it to the right
 
         self.search_entry = tk.Entry(self.search_frame, width=30)
-        self.search_entry.grid(row=0, column=1)
+        self.search_entry.grid(row=0, column=1, padx=(0, 10))
 
-        self.search_button = tk.Button(self.search_frame, text="Search", command=self.search_student, font=("Helvetica", 12))
-        self.search_button.grid(row=0, column=2, padx=10)
+        self.search_button = tk.Button(self.search_frame, text="Search", command=self.search_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
+        self.search_button.grid(row=0, column=2, padx=(0, 45)) 
 
         self.buttons = []
         button_info = [("Add Student", self.open_add_student_window),
@@ -41,18 +53,18 @@ class StudentRecordManagementSystem:
                        ("Update Record", self.update_student_record),
                        ("Delete Record", self.delete_student_record)]
 
-        for btn_text, command in button_info:
-            btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 12), width=20, height=2)
-            btn.pack(pady=5)
+        for i, (btn_text, command) in enumerate(button_info):
+            btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 12), bg="black", fg="#DBBB5F", width=20, height=2)
+            btn.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=35*i - 30)
             btn.bind("<Enter>", self.on_enter)
             btn.bind("<Leave>", self.on_leave)
             self.buttons.append(btn)
 
     def on_enter(self, event):
-        event.widget.config(bg="pink")
+        event.widget.config(bg="gray")
 
     def on_leave(self, event):
-        event.widget.config(bg="SystemButtonFace")  
+        event.widget.config(bg="black")  
 
     def open_add_student_window(self):
         AddStudentWindow(self.root)
@@ -65,10 +77,17 @@ class StudentRecordManagementSystem:
 
     def delete_student_record(self):
         DeleteStudentRecordWindow(self.root)
-
     def search_student(self):
         student_id = self.search_entry.get()
+        if not student_id:  # Check if the student ID entry is empty
+                messagebox.showerror("Error", "Please enter the student ID.")
+                return
+        if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
+            messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+            return
+        
         found, student_info = find_student_info(student_id)
+        
         if found:
             DisplaySearchResultWindow(self.root, student_info)
         else:
@@ -300,7 +319,7 @@ class UpdateStudentRecordWindow:
 
                 # Read existing records, update the required record, and write back to the file
                 updated_records = []
-                encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+                encrypted_filename = encrypt_filename("student_records", shift=3)
                 with open(encrypted_filename, "r") as file:
                     for line in file:
                         decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
@@ -405,6 +424,12 @@ class DeleteStudentRecordWindow:
 
     def delete_student(self):
         student_id = self.id_entry.get()
+        if not student_id:  # Check if the student ID entry is empty
+                messagebox.showerror("Error", "Please enter the student ID.")
+                return
+        if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
+            messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+            return
         found = False
         encrypted_filename = encrypt_filename("student_records", shift=3)
         with open(encrypted_filename, "r") as file:

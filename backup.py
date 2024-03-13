@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime
+from PIL import Image, ImageTk
 
 id_entry = None
 name_entry = None
@@ -13,6 +14,7 @@ contact_entry = None
 birthday_entry = None
 add_window = None
 search_entry = None
+
 
 def caesar_cipher_encrypt(text, shift):
     encrypted_text = ""
@@ -227,59 +229,142 @@ def display_search_result(student_info):
     tk.Label(search_window, text=f"Email Address:                   {student_info[4]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Address:                             {student_info[5]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
     tk.Label(search_window, text=f"Contact Number:                {student_info[6]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
-
     tk.Label(search_window, text=f"Birthday:                              {student_info[7]}", width=label_width, anchor="w", font=label_font).pack(pady=5)
 
-def save_updated_record():
+def update_student_record():
+    def verify_student_id():
+        student_id = id_entry.get()
+        found = False
+        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        with open(encrypted_filename, "r") as file:
+            for line in file:
+                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                if decrypted_student_info.startswith(student_id):
+                    found = True
+                    student_info = decrypted_student_info.split(',')
+                    break
 
-     search_window = tk.Toplevel(root)
-     search_window.title("Update Record")
+        if not found:
+            messagebox.showerror("Error", "Student ID not found.")
+            return
 
-     full_name = name_entry.get()
-     sex = sex_var.get()
-     email_add = email_entry.get()
-     address = address_entry.get()
-     contact_number = contact_entry.get()
-     birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
+        verify_window.destroy()
+        show_update_window(student_info)
 
-    # Check if any required field is empty
-     if not (full_name and sex and email_add and address and contact_number and birthday):
-        messagebox.showerror("Error", "All fields are required.")
-        return
+    def show_update_window(student_info):
+        update_window = tk.Toplevel(root)
+        update_window.title("Update Record")
 
-        if found:
-            messagebox.showinfo("Success", "Save Updated Record!")
-        else:
-         messagebox.showerror("Error", "Save Updated Record!")
+        window_width = 430
+        window_height = 300
+        screen_width = update_window.winfo_screenwidth()
+        screen_height = update_window.winfo_screenheight()
+        x_coordinate = int((screen_width / 2) - (window_width / 2))
+        y_coordinate = int((screen_height / 2) - (window_height / 2))
+        update_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
-    # Compute age based on birthday
-     try:
-        age = calculate_age(birthday)
-     except ValueError:
-        messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
-        return
+        
+        def save_updated_record():
+            full_name = name_entry.get()
+            sex = sex_var.get()
+            email_add = email_entry.get()
+            address = address_entry.get()
+            contact_number = contact_entry.get()
+            birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
 
-    # Construct updated student record
-     updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
+            # Compute age based on birthday
+            try:
+                age = calculate_age(birthday)
+            except ValueError:
+                messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
+                return
 
-     encrypted_updated_info = caesar_cipher_encrypt(updated_student_info, shift=3)
+            # Construct updated student record
+            updated_student_info = f"{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
-    # Read existing records, update the required record, and write back to the file
-     updated_records = []
-     encrypted_filename = encrypt_filename("student_records.txt", shift=3)
-     with open(encrypted_filename, "r") as file:
-        for line in file:
-            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
-            if decrypted_student_info.startswith(student_id):
-                updated_records.append(encrypted_updated_info)
-            else:
-                updated_records.append(line)
+            encrypted_updated_info = caesar_cipher_encrypt(updated_student_info, shift=3)
+            
+            # Read existing records, update the required record, and write back to the file
+            updated_records = []
+            encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+            with open(encrypted_filename, "r") as file:
+                for line in file:
+                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                    if decrypted_student_info.startswith(student_id):
+                        updated_records.append(encrypted_updated_info)
+                    else:
+                        updated_records.append(line)
 
-    # Write updated records back to the file
-     with open(encrypted_filename, "w") as file:
-        file.writelines(updated_records)
+            # Write updated records back to the file
+            with open(encrypted_filename, "w") as file:
+                file.writelines(updated_records)
 
-     update_window.destroy()
+            messagebox.showinfo("Success", "Student information updated successfully!")
+            update_window.destroy()
+
+        # Extract student ID from decrypted information
+        student_id = student_info[0]
+
+        name_label = tk.Label(update_window, text="Full Name:", font=("Helvetica", 12))
+        name_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        name_entry = tk.Entry(update_window, width=30)
+        name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        name_entry.insert(0, student_info[1])
+
+        sex_label = tk.Label(update_window, text="Sex:", font=("Helvetica", 12))
+        sex_label.grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        sex_var = tk.StringVar(value=student_info[3])
+        sex_male = tk.Radiobutton(update_window, text="Male", variable=sex_var, value="Male", font=("Helvetica", 12))
+        sex_male.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        sex_female = tk.Radiobutton(update_window, text="Female", variable=sex_var, value="Female", font=("Helvetica", 12))
+        sex_female.grid(row=3, column=1, padx=100, pady=5, sticky="w")
+
+        email_label = tk.Label(update_window, text="Email Address:", font=("Helvetica", 12))
+        email_label.grid(row=4, column=0, padx=10, pady=5, sticky="e")
+        email_entry = tk.Entry(update_window, width=30)
+        email_entry.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        email_entry.insert(0, student_info[4])
+
+        address_label = tk.Label(update_window, text="Address:", font=("Helvetica", 12))
+        address_label.grid(row=5, column=0, padx=10, pady=5, sticky="e")
+        address_entry = tk.Entry(update_window, width=30)
+        address_entry.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        address_entry.insert(0, student_info[5])
+
+        contact_label = tk.Label(update_window, text="Contact Number:", font=("Helvetica", 12))
+        contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
+        contact_entry = tk.Entry(update_window, width=30)
+        contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+        contact_entry.insert(0, student_info[6])
+
+        birthday_label = tk.Label(update_window, text="Birthday:", font=("Helvetica", 12))
+        birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
+        birthday_entry = DateEntry(update_window, width=12, background='darkblue', foreground='white', borderwidth=2)
+        birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        birthday_entry.set_date(student_info[7])
+
+        save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
+        save_button.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+
+    verify_window = tk.Toplevel(root)
+    verify_window.title("Verify Student ID")
+
+    window_width = 300
+    window_height = 150
+    screen_width = verify_window.winfo_screenwidth()
+    screen_height = verify_window.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    verify_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    verify_label = tk.Label(verify_window, text="Enter Student ID:", font=("Helvetica", 12))
+    verify_label.pack(pady=10)
+
+    id_entry = tk.Entry(verify_window, font=("Helvetica", 12))
+    id_entry.pack(pady=5)
+
+    verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
+    verify_button.pack(pady=5)
 
 def delete_student_record():
     def verify_and_delete():
@@ -333,47 +418,58 @@ root = tk.Tk()
 root.title("Student Information System")
 root.wm_state("zoom")
 
-canvas = tk.Canvas(root, width=root.winfo_screenwidth() // 2, height=root.winfo_screenheight(), bg="sky blue", highlightthickness=0)
-canvas.place(x=0, y=0)  # Ensure it's placed at the back
+
+copyright_label = tk.Label(root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
+copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-100, y=-50)
+
+image = Image.open("C:\\Users\\HomePC\\Desktop\\Project\\ui.png")
+resized_image = image.resize((200, 200))  # Adjust the size as needed, resize image to yung sa gilid
+
+photo = ImageTk.PhotoImage(resized_image)
+
+image_label = tk.Label(root, image=photo)
+image_label.place(x=50, y=50)
 
 
+pink_frame = tk.Frame(root, bg="black", width=360, height=590)  #yung box
+pink_frame.place(relx=0.2, rely=0.05, anchor='nw')  # Adjust relx to move the frame to the right
 
-title_label = tk.Label(root, text="Student Information System", font=("Times New Roman", 45))
-title_label.pack(pady=80)
-
-
+title_label = tk.Label(root, text="Student\nInformation\nSystem", font=("Times New Roman", 45), anchor='e', justify='right')
+title_label.place(relx=1, rely=0.4, anchor='e', x=-100, y=90)
 
 search_frame = tk.Frame(root)
-search_frame.pack(pady=(0, 20), padx=(0, 60), anchor='se') 
+search_frame.pack(side='top', padx=20, pady=(100, 200), anchor='se')  #  move it higher
 
 search_label = tk.Label(search_frame, text="Enter ID:", font=("Helvetica", 12))
-search_label.grid(row=0, column=0)
+search_label.grid(row=0, column=0, padx=(0, 10))  # move it to the right
 
 search_entry = tk.Entry(search_frame, width=30)
-search_entry.grid(row=0, column=1)
+search_entry.grid(row=0, column=1, padx=(0, 10))  #  move it to the right
 
-search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
-search_button.grid(row=0, column=2, padx=10)
+search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
+search_button.grid(row=0, column=2, padx=(0, 45))  #  to move it to the right
 
 
-add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12), width=20, height=2)
-add_button.pack(pady=(10, 5))  
+add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12), width=20, height=2, bg="black", fg="#DBBB5F")
+add_button.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=-30)  # Adjusted placement
 
-view_button = tk.Button(root, text="View Students", command=view_students, font=("Helvetica", 12), width=20, height=2)
-view_button.pack(pady=5)
+view_button = tk.Button(root, text="View Students", command=view_students, font=("Helvetica", 12), width=20, height=2, bg="black", fg="#DBBB5F")
+view_button.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=35)  # Adjusted placement
 
-update_button = tk.Button(root, text="Update Student Record", command=save_updated_record, font=("Helvetica", 12), width=20, height=2)
-update_button.pack(pady=5)
+update_button = tk.Button(root, text="Update Record", command=update_student_record, font=("Helvetica", 12), width=20, height=2, bg="black", fg="#DBBB5F")
+update_button.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=100)  # Adjusted placement
 
-delete_button = tk.Button(root, text="Delete Record", command=delete_student_record, font=("Helvetica", 12), width=20, height=2)
-delete_button.pack(pady=5)
+delete_button = tk.Button(root, text="Delete Record", command=delete_student_record, font=("Helvetica", 12), width=20, height=2, bg="black", fg="#DBBB5F")
+delete_button.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=165)  # Adjusted placementt
+
 
 def on_enter(event):
-    event.widget.config(bg="pink")
+    event.widget.config(bg="gray")
 
 def on_leave(event):
-    event.widget.config(bg="SystemButtonFace")  # Change to the default background color
+    event.widget.config(bg="black")  
 
+# Bind the events to the buttons
 add_button.bind("<Enter>", on_enter)
 add_button.bind("<Leave>", on_leave)
 
