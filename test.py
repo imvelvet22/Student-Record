@@ -3,6 +3,15 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime
 
+# Constants or configuration variables
+WINDOW_WIDTH = 427
+WINDOW_HEIGHT = 400
+ID_SIZE = 6
+PHONE_NUMBER_SIZE = 11
+FILENAME = "student_records.txt"
+SHIFT_VALUE = 3
+
+
 class StudentRecordManagementSystem:
     def __init__(self):
         self.root = tk.Tk()
@@ -85,13 +94,11 @@ class AddStudentWindow:
         self.add_window = tk.Toplevel(master)
         self.add_window.title("Add Student")
 
-        self.window_width = 427
-        self.window_height = 400
         self.screen_width = self.add_window.winfo_screenwidth()
         self.screen_height = self.add_window.winfo_screenheight()
-        self.x_coordinate = int((self.screen_width / 2) - (self.window_width / 2))
-        self.y_coordinate = int((self.screen_height / 2) - (self.window_height / 2))
-        self.add_window.geometry(f"{self.window_width}x{self.window_height}+{self.x_coordinate}+{self.y_coordinate}")
+        self.x_coordinate = int((self.screen_width / 2) - (WINDOW_WIDTH / 2))
+        self.y_coordinate = int((self.screen_height / 2) - (WINDOW_HEIGHT / 2))
+        self.add_window.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+{self.x_coordinate}+{self.y_coordinate}")
 
 
         # Initialize GUI components
@@ -145,8 +152,6 @@ class AddStudentWindow:
         add_button.grid(row=8, column=0, columnspan=2, pady=10, padx=1, sticky="we")
 
     def save_student(self):
-        size = "123456"
-        size2 = "12345678900"
         id_no = self.id_entry.get()
         full_name = self.name_entry.get()
         sex = self.sex_var.get()
@@ -162,15 +167,15 @@ class AddStudentWindow:
         if not id_no.isdigit():
             messagebox.showerror("Error" , "Id must be a number.")
             return
-        if (len(id_no) != len(size)):
-            messagebox.showerror("Error", "Id Number Size must be 6.")
+        if (len(id_no) != len(ID_SIZE)):
+            messagebox.showerror("Error", "Id Number Size must be {ID_SIZE}.")
             return
 
         if not contact_number.isdigit():
             messagebox.showerror("Error", "Contact number must be a number.")
             return
-        if (len(contact_number) != len(size2)):
-            messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
+        if (len(contact_number) != PHONE_NUMBER_SIZE) or not contact_number.startswith("09"):
+            messagebox.showerror("Error", f"Phone number must be {PHONE_NUMBER_SIZE} in length starting with 09.")
             return
 
         # Compute age based on birthday
@@ -273,8 +278,8 @@ class UpdateStudentRecordWindow:
             update_window = tk.Toplevel(self.master)
             update_window.title("Update Record")
 
-            window_width = 430
-            window_height = 300
+            window_width = 427
+            window_height = 400
             screen_width = update_window.winfo_screenwidth()
             screen_height = update_window.winfo_screenheight()
             x_coordinate = int((screen_width / 2) - (window_width / 2))
