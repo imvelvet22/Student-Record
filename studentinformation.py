@@ -442,6 +442,22 @@ update_button.pack(pady=5)
 delete_button = tk.Button(root, text="Delete Record", command=delete_student_record, font=("Helvetica", 12), width=20, height=2)
 delete_button.pack(pady=5)
 
+def on_enter(event):
+    event.widget.config(bg="pink")
 
+def on_leave(event):
+    event.widget.config(bg="SystemButtonFace")  # Change to the default background color
+
+add_button.bind("<Enter>", on_enter)
+add_button.bind("<Leave>", on_leave)
+
+view_button.bind("<Enter>", on_enter)
+view_button.bind("<Leave>", on_leave)
+
+update_button.bind("<Enter>", on_enter)
+update_button.bind("<Leave>", on_leave)
+
+delete_button.bind("<Enter>", on_enter)
+delete_button.bind("<Leave>", on_leave)
 
 root.mainloop()
