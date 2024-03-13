@@ -413,11 +413,18 @@ def delete_student_record():
 
 
 root = tk.Tk()
-root.title("Student Record Management System")
+root.title("Student Information System")
 root.wm_state("zoom")
 
-title_label = tk.Label(root, text="Student Record Management System", font=("Helvetica", 45))
+canvas = tk.Canvas(root, width=root.winfo_screenwidth() // 2, height=root.winfo_screenheight(), bg="sky blue", highlightthickness=0)
+canvas.place(x=0, y=0)  # Ensure it's placed at the back
+
+
+
+title_label = tk.Label(root, text="Student Information System", font=("Times New Roman", 45))
 title_label.pack(pady=80)
+
+
 
 search_frame = tk.Frame(root)
 search_frame.pack(pady=(0, 20), padx=(0, 60), anchor='se') 
@@ -445,7 +452,7 @@ delete_button = tk.Button(root, text="Delete Record", command=delete_student_rec
 delete_button.pack(pady=5)
 
 def on_enter(event):
-    event.widget.config(bg="#8db4ad")
+    event.widget.config(bg="pink")
 
 def on_leave(event):
     event.widget.config(bg="SystemButtonFace")  # Change to the default background color
