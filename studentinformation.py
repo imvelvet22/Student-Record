@@ -366,7 +366,11 @@ def update_student_record():
 
 def delete_student_record():
     def verify_and_delete():
-        student_id = id_entry.get()
+        student_id = id_entry.get().strip()  # Get the entered student ID and strip any leading/trailing whitespace
+        if not student_id:
+            messagebox.showerror("Error", "Please enter the Student ID first.")
+            return
+        
         found = False
         encrypted_filename = encrypt_filename("student_records.txt", shift=3)
         with open(encrypted_filename, "r") as file:
@@ -414,31 +418,28 @@ root.wm_state("zoom")
 title_label = tk.Label(root, text="Student Record Management System", font=("Helvetica", 45))
 title_label.pack(pady=80)
 
-button_frame = tk.Frame(root)
-button_frame.pack()
-
-add_button = tk.Button(button_frame, text="Add Student", font=("Helvetica", 12), command=open_add_student_window, width=20, height=3)
-add_button.grid(row=0, column=0, padx=20)
-
-view_button = tk.Button(button_frame, text="View Students", font=("Helvetica", 12), command=view_students, width=20, height=3)
-view_button.grid(row=0, column=1, padx=20)
-
-update_button = tk.Button(button_frame, text="Update Student Record", font=("Helvetica", 12), command=update_student_record, width=20, height=3)
-update_button.grid(row=0, column=2, padx=20)
-
-delete_button = tk.Button(button_frame, text="Delete Student Record", font=("Helvetica", 12), command=delete_student_record, width=20, height=3)
-delete_button.grid(row=0, column=3, padx=20)
-
 search_frame = tk.Frame(root)
 search_frame.pack(pady=20)
 
 search_label = tk.Label(search_frame, text="Search Student by ID:", font=("Helvetica", 12))
 search_label.grid(row=0, column=0)
 
-search_entry = tk.Entry(search_frame, font=("Helvetica", 12), width=30)
-search_entry.grid(row=0, column=1, padx=10)
+search_entry = tk.Entry(search_frame, width=30)
+search_entry.grid(row=0, column=1)
 
-search_button = tk.Button(search_frame, text="Search", font=("Helvetica", 12), command=search_student)
+search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
 search_button.grid(row=0, column=2, padx=10)
+
+add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12))
+add_button.pack()
+
+view_button = tk.Button(root, text="View Students", command=view_students, font=("Helvetica", 12))
+view_button.pack()
+
+update_button = tk.Button(root, text="Update Student Record", command=update_student_record, font=("Helvetica", 12))
+update_button.pack()
+
+delete_button = tk.Button(root, text="Delete Student Record", command=delete_student_record, font=("Helvetica", 12))
+delete_button.pack()
 
 root.mainloop()
