@@ -35,29 +35,18 @@ class StudentRecordManagementSystem:
         self.search_button = tk.Button(self.search_frame, text="Search", command=self.search_student, font=("Helvetica", 12))
         self.search_button.grid(row=0, column=2, padx=10)
 
-        self.add_button = tk.Button(self.root, text="Add Student", command=self.open_add_student_window, font=("Helvetica", 12), width=20, height=2)
-        self.add_button.pack(pady=(10, 5))  
+        self.buttons = []
+        button_info = [("Add Student", self.open_add_student_window),
+                       ("View Students", self.view_students),
+                       ("Update Record", self.update_student_record),
+                       ("Delete Record", self.delete_student_record)]
 
-        self.view_button = tk.Button(self.root, text="View Students", command=self.view_students, font=("Helvetica", 12), width=20, height=2)
-        self.view_button.pack(pady=5)
-
-        self.update_button = tk.Button(self.root, text="Update Record", command=self.update_student_record, font=("Helvetica", 12), width=20, height=2)
-        self.update_button.pack(pady=5)
-
-        self.delete_button = tk.Button(self.root, text="Delete Record", command=self.delete_student_record, font=("Helvetica", 12), width=20, height=2)
-        self.delete_button.pack(pady=5)
-
-        self.add_button.bind("<Enter>", self.on_enter)
-        self.add_button.bind("<Leave>", self.on_leave)
-
-        self.view_button.bind("<Enter>", self.on_enter)
-        self.view_button.bind("<Leave>", self.on_leave)
-
-        self.update_button.bind("<Enter>", self.on_enter)
-        self.update_button.bind("<Leave>", self.on_leave)
-
-        self.delete_button.bind("<Enter>", self.on_enter)
-        self.delete_button.bind("<Leave>", self.on_leave)
+        for btn_text, command in button_info:
+            btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 12), width=20, height=2)
+            btn.pack(pady=5)
+            btn.bind("<Enter>", self.on_enter)
+            btn.bind("<Leave>", self.on_leave)
+            self.buttons.append(btn)
 
     def on_enter(self, event):
         event.widget.config(bg="pink")
@@ -425,9 +414,17 @@ class DeleteStudentRecordWindow:
                     found = True
 
         if found:
-            messagebox.showinfo("Success", "Student record deleted successfully!")
+            confirm_delete = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete this student record?")
+            if confirm_delete:
+                messagebox.showinfo("Success", "Student record deleted successfully!")
+            else:
+                messagebox.showinfo("Cancelled", "Deletion cancelled.")
+                with open(encrypted_filename, "w") as file:
+                    for line in lines:
+                        file.write(line)
         else:
             messagebox.showerror("Error", "Student ID not found.")
+            
 class DisplaySearchResultWindow:
     def __init__(self, master, student_info):
         self.search_window = tk.Toplevel(master)
