@@ -253,14 +253,18 @@ class UpdateStudentRecordWindow:
     def initialize_gui(self):
         def verify_student_id():
             student_id = id_entry.get()
+            if not student_id:  # Check if the student ID entry is empty
+                messagebox.showerror("Error", "Please enter the student ID.")
+                return
+            if not student_id.isdigit() or len(student_id) != 6:  # Check if the student ID is not 6 digits
+                messagebox.showerror("Error", "Student ID must be a 6-digit number.")
+                return
             found, student_info = find_student_info(student_id)
             if found:
                 verify_window.destroy()
                 show_update_window(student_info)
-                
             else:
                 messagebox.showerror("Error", "Student ID not found.")
-                return
 
         def show_update_window(student_info):
             update_window = tk.Toplevel(self.master)
