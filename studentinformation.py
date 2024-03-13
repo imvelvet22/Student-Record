@@ -421,7 +421,7 @@ title_label.pack(pady=80)
 search_frame = tk.Frame(root)
 search_frame.pack(pady=20)
 
-search_label = tk.Label(search_frame, text="Search Student by ID:", font=("Helvetica", 12))
+search_label = tk.Label(search_frame, text="Enter ID:", font=("Helvetica", 12))
 search_label.grid(row=0, column=0)
 
 search_entry = tk.Entry(search_frame, width=30)
@@ -430,16 +430,18 @@ search_entry.grid(row=0, column=1)
 search_button = tk.Button(search_frame, text="Search", command=search_student, font=("Helvetica", 12))
 search_button.grid(row=0, column=2, padx=10)
 
-add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12))
-add_button.pack()
+add_button = tk.Button(root, text="Add Student", command=open_add_student_window, font=("Helvetica", 12), width=20, height=2)
+add_button.pack(pady=(10, 5))  
 
-view_button = tk.Button(root, text="View Students", command=view_students, font=("Helvetica", 12))
-view_button.pack()
+view_button = tk.Button(root, text="View Students", command=view_students, font=("Helvetica", 12), width=20, height=2)
+view_button.pack(pady=5)
 
-update_button = tk.Button(root, text="Update Student Record", command=update_student_record, font=("Helvetica", 12))
-update_button.pack()
+update_button = tk.Button(root, text="Update Record", command=update_student_record, font=("Helvetica", 12), width=20, height=2)
+update_button.pack(pady=5)
 
-delete_button = tk.Button(root, text="Delete Student Record", command=delete_student_record, font=("Helvetica", 12))
-delete_button.pack()
+delete_button = tk.Button(root, text="Delete Record", command=delete_student_record, font=("Helvetica", 12), width=20, height=2)
+delete_button.pack(pady=5)
+
+
 
 root.mainloop()
