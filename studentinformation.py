@@ -101,7 +101,7 @@ def open_add_student_window():
     add_window = tk.Toplevel(root)
     add_window.title("Add Student")
 
-    window_width = 400
+    window_width = 410
     window_height = 400
     screen_width = add_window.winfo_screenwidth()
     screen_height = add_window.winfo_screenheight()
@@ -151,7 +151,7 @@ def open_add_student_window():
     birthday_entry.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
     add_button = tk.Button(add_window, text="Add Student", command=save_student, font=("Helvetica", 12))
-    add_button.grid(row=9, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+    add_button.grid(row=9, column=0, columnspan=2, pady=10, padx=1, sticky="we")
 
     add_window.mainloop()
 
@@ -253,8 +253,8 @@ def update_student_record():
         update_window = tk.Toplevel(root)
         update_window.title("Update Record")
 
-        window_width = 500
-        window_height = 400
+        window_width = 300
+        window_height = 300
         screen_width = update_window.winfo_screenwidth()
         screen_height = update_window.winfo_screenheight()
         x_coordinate = int((screen_width / 2) - (window_width / 2))
