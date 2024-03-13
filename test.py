@@ -9,11 +9,14 @@ class StudentRecordManagementSystem:
         self.root.title("Student Record Management System")
         self.root.wm_state("zoom")
 
-        self.title_label = tk.Label(self.root, text="Student Record Management System", font=("Helvetica", 45))
+        self.canvas = tk.Canvas(self.root, width=self.root.winfo_screenwidth() // 2, height=self.root.winfo_screenheight(), bg="sky blue", highlightthickness=0)
+        self.canvas.place(x=0, y=0)  # Ensure it's placed at the back
+
+        self.title_label = tk.Label(self.root, text="Student Record Management System", font=("Times New Roman", 45))
         self.title_label.pack(pady=80)
 
         self.search_frame = tk.Frame(self.root)
-        self.search_frame.pack(pady=20)
+        self.search_frame.pack(pady=(0, 20), padx=(0, 60), anchor='se') 
 
         self.search_label = tk.Label(self.search_frame, text="Enter ID:", font=("Helvetica", 12))
         self.search_label.grid(row=0, column=0)
@@ -49,7 +52,7 @@ class StudentRecordManagementSystem:
         self.delete_button.bind("<Leave>", self.on_leave)
 
     def on_enter(self, event):
-        event.widget.config(bg="#8db4ad")
+        event.widget.config(bg="pink")
 
     def on_leave(self, event):
         event.widget.config(bg="SystemButtonFace")  
