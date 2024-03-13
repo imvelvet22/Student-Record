@@ -177,7 +177,7 @@ class AddStudentWindow:
 
         encrypted_student_info = caesar_cipher_encrypt(student_info, shift=3)
 
-        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        encrypted_filename = encrypt_filename("student_records", shift=3)
 
         with open(encrypted_filename, "a") as file:
             file.write(encrypted_student_info)
@@ -232,7 +232,7 @@ class ViewStudentsWindow:
             self.tree.delete(record)
 
         # Retrieve student records from file
-        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        encrypted_filename = encrypt_filename("student_records", shift=3)
         with open(encrypted_filename, "r") as file:
             for line in file:
                 decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
@@ -406,7 +406,7 @@ class DeleteStudentRecordWindow:
     def delete_student(self):
         student_id = self.id_entry.get()
         found = False
-        encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+        encrypted_filename = encrypt_filename("student_records", shift=3)
         with open(encrypted_filename, "r") as file:
             lines = file.readlines()
         with open(encrypted_filename, "w") as file:
@@ -470,7 +470,7 @@ class DisplaySearchResultWindow:
 def find_student_info(student_id):
     found = False
     student_info = None
-    encrypted_filename = encrypt_filename("student_records.txt", shift=3)
+    encrypted_filename = encrypt_filename("student_records", shift=3)
     with open(encrypted_filename, "r") as file:
         for line in file:
             decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
@@ -480,9 +480,13 @@ def find_student_info(student_id):
                 break
     return found, student_info
 
+def reverse_text(text):
+    return text[::-1]
+
 def caesar_cipher_encrypt(text, shift):
+    reversed_text = reverse_text(text)
     encrypted_text = ""
-    for char in text:
+    for char in reversed_text:
         encrypted_ascii = (ord(char) + shift) % 256  # Shift within ASCII range
         encrypted_text += chr(encrypted_ascii)
     return encrypted_text
@@ -492,11 +496,12 @@ def caesar_cipher_decrypt(text, shift):
     for char in text:
         decrypted_ascii = (ord(char) - shift) % 256  # Shift within ASCII range
         decrypted_text += chr(decrypted_ascii)
-    return decrypted_text
+    return reverse_text(decrypted_text)
 
 def encrypt_filename(filename, shift):
-    encrypted_filename = filename + ".txt"
-    return caesar_cipher_encrypt(encrypted_filename, shift)
+    encrypted_filename = caesar_cipher_encrypt(filename, shift) + ".txt"
+    return encrypted_filename
+
 
 def decrypt_filename(encrypted_filename, shift):
     return caesar_cipher_decrypt(encrypted_filename, shift)
