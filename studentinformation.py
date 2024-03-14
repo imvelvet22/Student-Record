@@ -148,7 +148,6 @@ class AddStudentWindow:
         contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
         self.contact_entry = tk.Entry(self.add_window, width=30)
         self.contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
-
         self.contact_entry.bind('<FocusOut>', lambda event: self.validate_contact())
         birthday_label = tk.Label(self.add_window, text="Birthday:", font=("Helvetica", 12))
         birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
