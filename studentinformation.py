@@ -18,21 +18,21 @@ class StudentRecordManagementSystem:
         self.root.wm_state("zoom")
 
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
-        self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-100, y=-50)
+        self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-40, y=-30)
 
         self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
-        self.resized_image = self.image.resize((200, 200))  # Adjust the size as needed, resize image to yung sa gilid
+        self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
 
         self.photo = ImageTk.PhotoImage(self.resized_image)
 
         self.image_label = tk.Label(self.root, image=self.photo)
-        self.image_label.place(x=50, y=50)
+        self.image_label.place(x=150, y=50)
 
-        self.pink_frame = tk.Frame(self.root, bg="black", width=360, height=590)  #yung box
+        self.pink_frame = tk.Frame(self.root, bg="black", width=460, height=890)  #yung box
         self.pink_frame.place(relx=0.2, rely=0.05, anchor='nw')  # Adjust relx to move the frame to the right
 
 
-        self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 45), anchor='e', justify='right')
+        self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 80), anchor='e', justify='right')
         self.title_label.place(relx=1, rely=0.4, anchor='e', x=-100, y=90)
 
         self.search_frame = tk.Frame(self.root)
@@ -55,7 +55,7 @@ class StudentRecordManagementSystem:
 
         for i, (btn_text, command) in enumerate(button_info):
             btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 12), bg="black", fg="#DBBB5F", width=20, height=2)
-            btn.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=35*i - 30)
+            btn.place(relx=0.43, rely=0.5, anchor='center', x=-200, y=35*i - 30)
             btn.bind("<Enter>", self.on_enter)
             btn.bind("<Leave>", self.on_leave)
             self.buttons.append(btn)
