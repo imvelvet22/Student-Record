@@ -20,8 +20,6 @@ class StudentRecordManagementSystem:
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
         self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-130, y=-90)
 
-        
-    
         self.image = Image.open("C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png")
 
         self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
