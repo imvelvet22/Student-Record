@@ -19,9 +19,9 @@ class StudentRecordManagementSystem:
 
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
         self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-130, y=-90)
-        
-    
-        self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
+
+        self.image = Image.open("C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png")
+
         self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
 
         self.photo = ImageTk.PhotoImage(self.resized_image)
@@ -38,7 +38,7 @@ class StudentRecordManagementSystem:
         self.image_canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height, highlightthickness=0)  # Remove highlight border
         self.image_canvas.place(x=500, y=130)
 
-        self.logo = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\logo2.png")
+        self.logo = Image.open("C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\logo2.png")
         self.resized_logo = self.logo.resize((canvas_width, canvas_height))  # Resize to canvas size
 
         self.photo_logo = ImageTk.PhotoImage(self.resized_logo)
@@ -161,7 +161,6 @@ class AddStudentWindow:
         contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
         self.contact_entry = tk.Entry(self.add_window, width=30)
         self.contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
-
         self.contact_entry.bind('<FocusOut>', lambda event: self.validate_contact())
         birthday_label = tk.Label(self.add_window, text="Birthday:", font=("Helvetica", 12))
         birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
