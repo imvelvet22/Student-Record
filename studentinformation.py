@@ -147,12 +147,17 @@ class AddStudentWindow:
         contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
         self.contact_entry = tk.Entry(self.add_window, width=30)
         self.contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
+
         self.contact_entry.bind('<FocusOut>', lambda event: self.validate_contact())
         birthday_label = tk.Label(self.add_window, text="Birthday:", font=("Helvetica", 12))
         birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
         self.birthday_entry = DateEntry(self.add_window, width=12, background='darkblue', foreground='white', borderwidth=2)
         self.birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
         
+        add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
+        add_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
+        
+    
 
 
     def save_student(self):
@@ -177,8 +182,6 @@ class AddStudentWindow:
             self.id_entry.config(bg="pink", fg="red")
         else:
             self.id_entry.config(bg="white", fg="black")
-        
-
 
     def save_student(self):
         id_no = self.id_entry.get()
