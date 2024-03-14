@@ -19,8 +19,8 @@ class StudentRecordManagementSystem:
 
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
         self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-130, y=-90)
-
-        self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
+# "C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png"/-
+        self.image = Image.open("C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png")
         self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
 
         self.photo = ImageTk.PhotoImage(self.resized_image)
@@ -100,7 +100,6 @@ class AddStudentWindow:
     def __init__(self, master):
         self.add_window = tk.Toplevel(master)
         self.add_window.title("Add Student")
-
         self.screen_width = self.add_window.winfo_screenwidth()
         self.screen_height = self.add_window.winfo_screenheight()
         self.x_coordinate = int((self.screen_width / 2) - (WINDOW_WIDTH / 2))
@@ -120,7 +119,7 @@ class AddStudentWindow:
         id_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
         self.id_entry = tk.Entry(self.add_window, width=30)
         self.id_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-
+        self.id_entry.bind('<FocusOut>', lambda event: self.validate_id())
         name_label = tk.Label(self.add_window, text="Full Name:", font=("Helvetica", 12))
         name_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
         self.name_entry = tk.Entry(self.add_window, width=30)
@@ -148,15 +147,38 @@ class AddStudentWindow:
         contact_label.grid(row=6, column=0, padx=10, pady=5, sticky="e")
         self.contact_entry = tk.Entry(self.add_window, width=30)
         self.contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
-
+        self.contact_entry.bind('<FocusOut>', lambda event: self.validate_contact())
         birthday_label = tk.Label(self.add_window, text="Birthday:", font=("Helvetica", 12))
         birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
         self.birthday_entry = DateEntry(self.add_window, width=12, background='darkblue', foreground='white', borderwidth=2)
         self.birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        
 
+
+    def save_student(self):
         # Add Button
         add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
         add_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
+
+    def validate_id(self):
+        id_no = self.id_entry.get()
+        if not id_no:
+            self.id_entry.config (fg="red")
+        elif not id_no.isdigit() or len(id_no) != 6:
+            self.id_entry.config(fg="red")
+        else:
+            self.id_entry.config(bg="white" )
+
+    def validate_contact(self):
+        id_no = self.id_entry.get()
+        if not id_no:
+            self.id_entry.config(bg="pink")  
+        elif not id_no.isdigit() or len(id_no) != 6:
+            self.id_entry.config(bg="pink")
+        else:
+            self.id_entry.config(bg="white")  
+        
+
 
     def save_student(self):
         id_no = self.id_entry.get()
