@@ -163,20 +163,20 @@ class AddStudentWindow:
     def validate_id(self):
         id_no = self.id_entry.get()
         if not id_no:
-            self.id_entry.config (fg="red")
+            self.id_entry.config(bg="pink", fg="red")
         elif not id_no.isdigit() or len(id_no) != 6:
-            self.id_entry.config(fg="red")
+            self.id_entry.config(bg="pink", fg="red")
         else:
-            self.id_entry.config(bg="white" )
+            self.id_entry.config(bg="white", fg="black")
 
     def validate_contact(self):
         id_no = self.id_entry.get()
         if not id_no:
-            self.id_entry.config(bg="pink")  
+            self.id_entry.config(bg="pink", fg="red")
         elif not id_no.isdigit() or len(id_no) != 6:
-            self.id_entry.config(bg="pink")
+            self.id_entry.config(bg="pink", fg="red")
         else:
-            self.id_entry.config(bg="white")  
+            self.id_entry.config(bg="white", fg="black")
         
 
 
