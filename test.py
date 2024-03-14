@@ -19,7 +19,8 @@ class StudentRecordManagementSystem:
 
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
         self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-130, y=-90)
-
+        
+    
         self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
         self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
 
@@ -30,6 +31,19 @@ class StudentRecordManagementSystem:
 
         self.pink_frame = tk.Frame(self.root, bg="black", width=460, height=890)  #yung box
         self.pink_frame.place(relx=0.2, rely=0.05, anchor='nw')  # Adjust relx to move the frame to the right
+
+        canvas_width = 250
+        canvas_height = 250
+
+        self.image_canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height, highlightthickness=0)  # Remove highlight border
+        self.image_canvas.place(x=500, y=130)
+
+        self.logo = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\logo2.png")
+        self.resized_logo = self.logo.resize((canvas_width, canvas_height))  # Resize to canvas size
+
+        self.photo_logo = ImageTk.PhotoImage(self.resized_logo)
+
+        self.image_canvas.create_image(canvas_width / 2, canvas_height / 2, image=self.photo_logo, anchor="center")  # Center the image
 
 
         self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 80), anchor='e', justify='right')
@@ -100,7 +114,6 @@ class AddStudentWindow:
     def __init__(self, master):
         self.add_window = tk.Toplevel(master)
         self.add_window.title("Add Student")
-
         self.screen_width = self.add_window.winfo_screenwidth()
         self.screen_height = self.add_window.winfo_screenheight()
         self.x_coordinate = int((self.screen_width / 2) - (WINDOW_WIDTH / 2))
@@ -120,7 +133,7 @@ class AddStudentWindow:
         id_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
         self.id_entry = tk.Entry(self.add_window, width=30)
         self.id_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-
+        self.id_entry.bind('<FocusOut>', lambda event: self.validate_id())
         name_label = tk.Label(self.add_window, text="Full Name:", font=("Helvetica", 12))
         name_label.grid(row=2, column=0, padx=10, pady=5, sticky="e")
         self.name_entry = tk.Entry(self.add_window, width=30)
@@ -149,14 +162,44 @@ class AddStudentWindow:
         self.contact_entry = tk.Entry(self.add_window, width=30)
         self.contact_entry.grid(row=6, column=1, padx=10, pady=5, sticky="w")
 
+        self.contact_entry.bind('<FocusOut>', lambda event: self.validate_contact())
         birthday_label = tk.Label(self.add_window, text="Birthday:", font=("Helvetica", 12))
         birthday_label.grid(row=7, column=0, padx=10, pady=5, sticky="e")
         self.birthday_entry = DateEntry(self.add_window, width=12, background='darkblue', foreground='white', borderwidth=2)
         self.birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
+        
+        add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
+        add_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
+        
+    
 
+
+    def save_student(self):
         # Add Button
         add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
         add_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
+
+    def validate_id(self):
+        id_no = self.id_entry.get()
+        found, _ = find_student_info(id_no)
+        if not id_no:
+            self.id_entry.config(bg="pink", fg="red")
+        elif not id_no.isdigit() or len(id_no) != 6:
+            self.id_entry.config(bg="pink", fg="red")
+        elif found:
+            self.id_entry.config(bg="pink", fg="red")
+        else:
+            self.id_entry.config(bg="white", fg="black")
+
+    def validate_contact(self):
+        contact = self.contact_entry.get()
+        if not contact:
+           self.contact_entry.config(bg="pink", fg="red")
+        elif not contact.isdigit() or len(contact) != 11:
+            self.contact_entry.config(bg="pink", fg="red")
+        else:
+            self.contact_entry.config(bg="white", fg="black")
+
 
     def save_student(self):
         id_no = self.id_entry.get()
@@ -171,26 +214,6 @@ class AddStudentWindow:
             messagebox.showerror("Error", "Please fill in all fields.")
             return
 
-        if not id_no.isdigit():
-            messagebox.showerror("Error" , "Id must be a number.")
-            return
-        if (len(id_no) != len(ID_SIZE)):
-            messagebox.showerror("Error", "Id Number Size must be 6.")
-            return
-
-        if not contact_number.isdigit():
-            messagebox.showerror("Error", "Contact number must be a number.")
-            return
-        if (len(contact_number) != len(CONTACT_NUMBER_SIZE)):
-            messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
-            return
-        
-            # Check if the student ID is already taken
-        found, _ = find_student_info(id_no)
-        if found:
-            messagebox.showerror("Error", "Student ID is already taken.")
-            return
-
         # Compute age based on birthday
         try:
             age = calculate_age(birthday)
@@ -201,7 +224,7 @@ class AddStudentWindow:
 
         student_info = f"{id_no},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}\n"
 
-        encrypted_student_info = caesar_cipher_encrypt(student_info, shift=3)
+        encrypted_student_info = encrypt(student_info, shift=3)
 
         encrypted_filename = encrypt_filename("student_records", shift=3)
 
@@ -262,7 +285,7 @@ class ViewStudentsWindow:
         with open(encrypted_filename, "r") as file:
             for line in file:
                 if line.strip():  # Check if line is not empty
-                    decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                    decrypted_student_info = decrypt(line.strip(), shift=3)
                     student_info = decrypted_student_info.split(',')
                     self.tree.insert("", tk.END, values=student_info)
 
@@ -331,14 +354,14 @@ class UpdateStudentRecordWindow:
                 # Construct updated student record
                 updated_student_info = f"\n{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}"
 
-                encrypted_updated_info = caesar_cipher_encrypt(updated_student_info, shift=3)
+                encrypted_updated_info = encrypt(updated_student_info, shift=3)
 
                 # Read existing records, update the required record, and write back to the file
                 updated_records = []
                 encrypted_filename = encrypt_filename("student_records", shift=3)
                 with open(encrypted_filename, "r") as file:
                     for line in file:
-                        decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                        decrypted_student_info = decrypt(line.strip(), shift=3)
                         if decrypted_student_info.startswith(student_id):
                             updated_records.append(encrypted_updated_info)
                         else:
@@ -454,7 +477,7 @@ class DeleteStudentRecordWindow:
             lines = file.readlines()
         with open(encrypted_filename, "w") as file:
             for line in lines:
-                decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+                decrypted_student_info = decrypt(line.strip(), shift=3)
                 if not decrypted_student_info.startswith(student_id):
                     file.write(line)
                 else:
@@ -518,7 +541,7 @@ def find_student_info(student_id):
     encrypted_filename = encrypt_filename("student_records", shift=3)
     with open(encrypted_filename, "r") as file:
         for line in file:
-            decrypted_student_info = caesar_cipher_decrypt(line.strip(), shift=3)
+            decrypted_student_info = decrypt(line.strip(), shift=3)
             if decrypted_student_info.startswith(student_id):
                 found = True
                 student_info = decrypted_student_info.split(',')
@@ -528,7 +551,7 @@ def find_student_info(student_id):
 def reverse_text(text):
     return text[::-1]
 
-def caesar_cipher_encrypt(text, shift):
+def encrypt(text, shift):
     reversed_text = reverse_text(text)
     encrypted_text = ""
     for char in reversed_text:
@@ -536,7 +559,8 @@ def caesar_cipher_encrypt(text, shift):
         encrypted_text += chr(encrypted_ascii)
     return encrypted_text
 
-def caesar_cipher_decrypt(text, shift):
+
+def decrypt(text, shift):
     decrypted_text = ""
     for char in text:
         decrypted_ascii = (ord(char) - shift) % 256  # Shift within ASCII range
@@ -544,12 +568,11 @@ def caesar_cipher_decrypt(text, shift):
     return reverse_text(decrypted_text)
 
 def encrypt_filename(filename, shift):
-    encrypted_filename = caesar_cipher_encrypt(filename, shift) + ".txt"
+    encrypted_filename = encrypt(filename, shift) + ".txt"
     return encrypted_filename
 
-
 def decrypt_filename(encrypted_filename, shift):
-    return caesar_cipher_decrypt(encrypted_filename, shift)
+    return decrypt(encrypted_filename, shift)
 
 def calculate_age(birthdate):
     current_date = datetime.now()

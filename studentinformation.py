@@ -181,21 +181,25 @@ class AddStudentWindow:
 
     def validate_id(self):
         id_no = self.id_entry.get()
+        found, _ = find_student_info(id_no)
         if not id_no:
             self.id_entry.config(bg="pink", fg="red")
         elif not id_no.isdigit() or len(id_no) != 6:
+            self.id_entry.config(bg="pink", fg="red")
+        elif found:
             self.id_entry.config(bg="pink", fg="red")
         else:
             self.id_entry.config(bg="white", fg="black")
 
     def validate_contact(self):
-        id_no = self.id_entry.get()
-        if not id_no:
-            self.id_entry.config(bg="pink", fg="red")
-        elif not id_no.isdigit() or len(id_no) != 6:
-            self.id_entry.config(bg="pink", fg="red")
+        contact = self.contact_entry.get()
+        if not contact:
+           self.contact_entry.config(bg="pink", fg="red")
+        elif not contact.isdigit() or len(contact) != 11:
+            self.contact_entry.config(bg="pink", fg="red")
         else:
-            self.id_entry.config(bg="white", fg="black")
+            self.contact_entry.config(bg="white", fg="black")
+
 
     def save_student(self):
         id_no = self.id_entry.get()
@@ -208,26 +212,6 @@ class AddStudentWindow:
 
         if not all([id_no, full_name, sex, email_add, address, contact_number, birthday]):
             messagebox.showerror("Error", "Please fill in all fields.")
-            return
-
-        if not id_no.isdigit():
-            messagebox.showerror("Error" , "Id must be a number.")
-            return
-        if (len(id_no) != len(ID_SIZE)):
-            messagebox.showerror("Error", "Id Number Size must be 6.")
-            return
-
-        if not contact_number.isdigit():
-            messagebox.showerror("Error", "Contact number must be a number.")
-            return
-        if (len(contact_number) != len(CONTACT_NUMBER_SIZE)):
-            messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
-            return
-        
-            # Check if the student ID is already taken
-        found, _ = find_student_info(id_no)
-        if found:
-            messagebox.showerror("Error", "Student ID is already taken.")
             return
 
         # Compute age based on birthday
