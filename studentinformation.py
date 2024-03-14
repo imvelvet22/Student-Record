@@ -19,39 +19,21 @@ class StudentRecordManagementSystem:
 
         self.copyright_label = tk.Label( self.root, text="© 2024 Baltazar, Bautista, Cabigting, Rueras", font=("Helvetica", 10))
         self.copyright_label.place(relx=1.0, rely=1.0, anchor='se', x=-130, y=-90)
-<<<<<<< Updated upstream
-# "C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png"/-
-        self.image = Image.open("C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\Student-Record\\asset\\ui.png")
-=======
         
-    
-        self.image = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\ui.png")
->>>>>>> Stashed changes
-        self.resized_image = self.image.resize((250, 250))  # Adjust the size as needed, resize image to yung sa gilid
+# "C:\\Users\\Monique Kyle\\OneDrive\\Documents\\Desktop\\GitHub\\projectclone\\asset\\ui.png"/-
+        self.image_path =("C:\\Users\\HomePC\\Desktop\\projectclone\\Student-Record\\uii.png")
+        self.image = Image.open("C:\\Users\\HomePC\\Desktop\\projectclone\\Student-Record\\uii.png")
 
+        self.resized_image = self.image.resize((200, 200)) # Adjust the size as needed, resize image to yung sa gilid
         self.photo = ImageTk.PhotoImage(self.resized_image)
 
         self.image_label = tk.Label(self.root, image=self.photo)
-        self.image_label.place(x=150, y=50)
+        self.image_label.place(x=50, y=50)
 
-        self.pink_frame = tk.Frame(self.root, bg="black", width=460, height=890)  #yung box
+        self.pink_frame = tk.Frame(self.root, bg="black", width=360, height=590)  #yung box
         self.pink_frame.place(relx=0.2, rely=0.05, anchor='nw')  # Adjust relx to move the frame to the right
 
-        canvas_width = 250
-        canvas_height = 250
-
-        self.image_canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height, highlightthickness=0)  # Remove highlight border
-        self.image_canvas.place(x=500, y=130)
-
-        self.logo = Image.open("C:\\Users\\HP G7\\OneDrive\\Desktop\\IAS\\Student-Record\\asset\\logo2.png")
-        self.resized_logo = self.logo.resize((canvas_width, canvas_height))  # Resize to canvas size
-
-        self.photo_logo = ImageTk.PhotoImage(self.resized_logo)
-
-        self.image_canvas.create_image(canvas_width / 2, canvas_height / 2, image=self.photo_logo, anchor="center")  # Center the image
-
-
-        self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 80), anchor='e', justify='right')
+        self.title_label = tk.Label(self.root, text="Student\nInformation\nSystem", font=("Times New Roman", 60), anchor='e', justify='right')
         self.title_label.place(relx=1, rely=0.4, anchor='e', x=-130, y=90)
 
         self.search_frame = tk.Frame(self.root)
@@ -64,7 +46,7 @@ class StudentRecordManagementSystem:
         self.search_entry.grid(row=0, column=1, padx=(0, 10))
 
         self.search_button = tk.Button(self.search_frame, text="Search", command=self.search_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
-        self.search_button.grid(row=0, column=2, padx=(0, 130)) 
+        self.search_button.grid(row=0, column=2, padx=(0, 100)) 
 
         self.buttons = []
         button_info = [("Add Student", self.open_add_student_window),
@@ -73,8 +55,8 @@ class StudentRecordManagementSystem:
                        ("Delete Record", self.delete_student_record)]
 
         for i, (btn_text, command) in enumerate(button_info):
-            btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 14), bg="black", fg="#DBBB5F", width=30, height=3)
-            btn.place(relx=0.43, rely=0.5, anchor='center', x=-200, y=100*i - 30)
+            btn = tk.Button(self.root, text=btn_text, command=command, font=("Helvetica", 12), bg="black", fg="#DBBB5F", width=30, height=3)
+            btn.place(relx=0.43, rely=0.4, anchor='center', x=-115, y=100*i - 30)
             btn.bind("<Enter>", self.on_enter)
             btn.bind("<Leave>", self.on_leave)
             self.buttons.append(btn)
@@ -186,21 +168,25 @@ class AddStudentWindow:
 
     def validate_id(self):
         id_no = self.id_entry.get()
+        found, _ = find_student_info(id_no)
         if not id_no:
             self.id_entry.config(bg="pink", fg="red")
         elif not id_no.isdigit() or len(id_no) != 6:
+            self.id_entry.config(bg="pink", fg="red")
+        elif found:
             self.id_entry.config(bg="pink", fg="red")
         else:
             self.id_entry.config(bg="white", fg="black")
 
     def validate_contact(self):
-        id_no = self.id_entry.get()
-        if not id_no:
-            self.id_entry.config(bg="pink", fg="red")
-        elif not id_no.isdigit() or len(id_no) != 6:
-            self.id_entry.config(bg="pink", fg="red")
+        contact = self.contact_entry.get()
+        if not contact:
+           self.contact_entry.config(bg="pink", fg="red")
+        elif not contact.isdigit() or len(contact) != 11:
+            self.contact_entry.config(bg="pink", fg="red")
         else:
-            self.id_entry.config(bg="white", fg="black")
+            self.contact_entry.config(bg="white", fg="black")
+
 
     def save_student(self):
         id_no = self.id_entry.get()
@@ -213,26 +199,6 @@ class AddStudentWindow:
 
         if not all([id_no, full_name, sex, email_add, address, contact_number, birthday]):
             messagebox.showerror("Error", "Please fill in all fields.")
-            return
-
-        if not id_no.isdigit():
-            messagebox.showerror("Error" , "Id must be a number.")
-            return
-        if (len(id_no) != len(ID_SIZE)):
-            messagebox.showerror("Error", "Id Number Size must be 6.")
-            return
-
-        if not contact_number.isdigit():
-            messagebox.showerror("Error", "Contact number must be a number.")
-            return
-        if (len(contact_number) != len(CONTACT_NUMBER_SIZE)):
-            messagebox.showerror("Error", "Phone number must be 11 in length starting with 09.")
-            return
-        
-            # Check if the student ID is already taken
-        found, _ = find_student_info(id_no)
-        if found:
-            messagebox.showerror("Error", "Student ID is already taken.")
             return
 
         # Compute age based on birthday
