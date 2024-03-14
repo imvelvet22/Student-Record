@@ -62,7 +62,7 @@ class StudentRecordManagementSystem:
             self.buttons.append(btn)
 
     def on_enter(self, event):
-        event.widget.config(bg="gray")
+        event.widget.config(bg="white")
 
     def on_leave(self, event):
         event.widget.config(bg="black")  
@@ -312,8 +312,8 @@ class UpdateStudentRecordWindow:
             update_window = tk.Toplevel(self.master)
             update_window.title("Update Record")
 
-            window_width = 427
-            window_height = 400
+            window_width = 470
+            window_height = 460
             screen_width = update_window.winfo_screenwidth()
             screen_height = update_window.winfo_screenheight()
             x_coordinate = int((screen_width / 2) - (window_width / 2))
@@ -328,6 +328,11 @@ class UpdateStudentRecordWindow:
                 contact_number = contact_entry.get()
                 birthday = birthday_entry.get_date().strftime("%m/%d/%Y")
 
+                # Check if contact number is a valid number and has 11 digits
+                if not contact_number.isdigit() or len(contact_number) != 11:
+                    messagebox.showerror("Error", "Contact number must be a number and should have 11 digits.")
+                    return
+
                 # Compute age based on birthday
                 try:
                     age = calculate_age(birthday)
@@ -337,7 +342,7 @@ class UpdateStudentRecordWindow:
                     update_window.destroy()
                     return
 
-                # Construct updated student record
+                
                 updated_student_info = f"\n{student_id},{full_name},{age},{sex},{email_add},{address},{contact_number},{birthday}"
 
                 encrypted_updated_info = encrypt(updated_student_info, shift=3)
@@ -363,8 +368,8 @@ class UpdateStudentRecordWindow:
             # Extract student ID from decrypted information
             student_id = student_info[0]
 
-            title_label = tk.Label(update_window, text="Update Student Information", font=("Helvetica", 20))
-            title_label.grid(row=0, column=0, columnspan=2, pady=20)
+            title_label = tk.Label(update_window, text="Update Student Information", font=("Times New Roman", 30))
+            title_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
             name_label = tk.Label(update_window, text="Full Name:", font=("Helvetica", 12))
             name_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
@@ -405,7 +410,7 @@ class UpdateStudentRecordWindow:
             birthday_entry.set_date(student_info[7])
 
             save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
-            save_button.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
+            save_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
 
         verify_window = tk.Toplevel(self.master)
         verify_window.title("Verify Student ID")
