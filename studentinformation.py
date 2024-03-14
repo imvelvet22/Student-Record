@@ -113,7 +113,7 @@ class AddStudentWindow:
 
     def initialize_gui(self):
         # Labels
-        title_label = tk.Label(self.add_window, text="Add Student Information", font=("Helvetica", 20))
+        title_label = tk.Label(self.add_window, text="Add Student Information", font=("Times New Roman", 30))
         title_label.grid(row=0, column=0, columnspan=2, pady=10)
 
         id_label = tk.Label(self.add_window, text="Student ID:", font=("Helvetica", 12))
@@ -155,8 +155,8 @@ class AddStudentWindow:
         self.birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
 
         # Add Button
-        add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12))
-        add_button.grid(row=8, column=0, columnspan=2, pady=10, padx=1, sticky="we")
+        add_button = tk.Button(self.add_window, text="Add Student", command=self.save_student, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
+        add_button.grid(row=8, column=1, columnspan=1, pady=20, padx=1, sticky="w")
 
     def save_student(self):
         id_no = self.id_entry.get()
@@ -194,6 +194,7 @@ class AddStudentWindow:
         # Compute age based on birthday
         try:
             age = calculate_age(birthday)
+            self.add_window.destroy()
         except ValueError:
             messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
             return
@@ -208,7 +209,7 @@ class AddStudentWindow:
             file.write(encrypted_student_info)
 
         messagebox.showinfo("Success", "Student information added successfully!")
-        self.add_window.destroy()
+        
 
 
 class ViewStudentsWindow:
@@ -289,14 +290,16 @@ class UpdateStudentRecordWindow:
                 return
             found, student_info = find_student_info(student_id)
             if found:
-                
+                verify_window.destroy()
                 show_update_window(student_info)
             else:
                 messagebox.showerror("Error", "Student ID not found.")
                 verify_window.destroy()
-            verify_window.destroy()
+            
+            
 
         def show_update_window(student_info):
+            
             update_window = tk.Toplevel(self.master)
             update_window.title("Update Record")
 
@@ -319,8 +322,10 @@ class UpdateStudentRecordWindow:
                 # Compute age based on birthday
                 try:
                     age = calculate_age(birthday)
+                    update_window.destroy()
                 except ValueError:
                     messagebox.showerror("Error", "Invalid birthday format. Please use MM/DD/YYYY.")
+                    update_window.destroy()
                     return
 
                 # Construct updated student record
@@ -342,9 +347,9 @@ class UpdateStudentRecordWindow:
                 # Write updated records back to the file
                 with open(encrypted_filename, "w") as file:
                     file.writelines(updated_records)
-
                 messagebox.showinfo("Success", "Student information updated successfully!")
-                update_window.destroy()
+                
+                
 
             # Extract student ID from decrypted information
             student_id = student_info[0]
@@ -390,7 +395,7 @@ class UpdateStudentRecordWindow:
             birthday_entry.grid(row=7, column=1, padx=10, pady=5, sticky="w")
             birthday_entry.set_date(student_info[7])
 
-            save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12))
+            save_button = tk.Button(update_window, text="Save", command=save_updated_record, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
             save_button.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky="we")
 
         verify_window = tk.Toplevel(self.master)
@@ -410,9 +415,9 @@ class UpdateStudentRecordWindow:
         id_entry = tk.Entry(verify_window, font=("Helvetica", 12))
         id_entry.pack(pady=5)
 
-        verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12))
+        verify_button = tk.Button(verify_window, text="Verify", command=verify_student_id, font=("Helvetica", 12), bg="black", fg="#DBBB5F")
         verify_button.pack(pady=5)
-
+        
 
 class DeleteStudentRecordWindow:
     def __init__(self, master):
